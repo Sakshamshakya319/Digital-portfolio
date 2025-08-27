@@ -25,7 +25,7 @@ const About = () => {
                     <div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center">
                       <div className="w-full h-full rounded-full overflow-hidden bg-gray-300">
                         <img
-                          src="../public/profile.jpg"
+                          src="../profile.jpg"
                           alt="Profile"
                           className="w-full h-full object-cover"
                         />
