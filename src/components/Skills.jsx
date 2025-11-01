@@ -1,7 +1,9 @@
 import React from 'react';
 import { Code, Palette, Database, Cloud, Smartphone, Zap } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Skills = () => {
+  const { isDark } = useTheme();
   const skillCategories = [
     {
       title: 'Frontend Development',
@@ -82,10 +84,10 @@ const Skills = () => {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Skills & <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Tools</span>
           </h2>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto">
+          <p className={`text-lg max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
             A comprehensive overview of my technical skills and the tools I use to bring ideas to life
           </p>
         </div>
@@ -95,13 +97,17 @@ const Skills = () => {
           {skillCategories.map((category, index) => {
             const Icon = category.icon;
             return (
-              <div key={index} className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300">
+              <div key={index} className={`backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 ${
+                isDark
+                  ? 'bg-slate-800 border-slate-700 hover:bg-slate-700'
+                  : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
+              }`}>
                 {/* Category Header */}
                 <div className="flex items-center mb-6">
                   <div className={`w-12 h-12 bg-gradient-to-r ${category.color} rounded-lg flex items-center justify-center mr-4`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">{category.title}</h3>
+                  <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{category.title}</h3>
                 </div>
 
                 {/* Skills List */}
@@ -109,10 +115,10 @@ const Skills = () => {
                   {category.skills.map((skill, skillIndex) => (
                     <div key={skillIndex} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-white/80 font-medium">{skill.name}</span>
-                        <span className="text-white/60 text-sm">{skill.level}%</span>
+                        <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{skill.name}</span>
+                        <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-700'}`}>{skill.level}%</span>
                       </div>
-                      <div className="w-full bg-white/10 rounded-full h-2">
+                      <div className={`w-full rounded-full h-2 ${isDark ? 'bg-slate-700' : 'bg-gray-300'}`}>
                         <div 
                           className={`h-2 bg-gradient-to-r ${category.color} rounded-full transition-all duration-1000 ease-out`}
                           style={{ width: `${skill.level}%` }}
@@ -132,24 +138,24 @@ const Skills = () => {
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">5+</span>
             </div>
-            <h4 className="text-lg font-semibold text-white mb-2">Years of Experience</h4>
-            <p className="text-white/60">Continuous learning and professional growth</p>
+            <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Years of Experience</h4>
+            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Continuous learning and professional growth</p>
           </div>
           
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">50+</span>
             </div>
-            <h4 className="text-lg font-semibold text-white mb-2">Projects Completed</h4>
-            <p className="text-white/60">From small websites to large-scale applications</p>
+            <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Projects Completed</h4>
+            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>From small websites to large-scale applications</p>
           </div>
           
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">17+</span>
             </div>
-            <h4 className="text-lg font-semibold text-white mb-2">Technologies</h4>
-            <p className="text-white/60">Always exploring the latest tools and frameworks</p>
+            <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Technologies</h4>
+            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Always exploring the latest tools and frameworks</p>
           </div>
         </div>
       </div>

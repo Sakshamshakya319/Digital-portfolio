@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { ExternalLink, Github, Filter, X } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Portfolio = () => {
+  const { isDark } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -68,6 +70,17 @@ const Portfolio = () => {
       technologies: [ 'Javascript', 'Express.js', 'API'],
       liveUrl: 'https://language-translator-two.vercel.app/',
       githubUrl: 'https://github.com/sakshamshakya337/Language-Translator'
+    },
+    {
+      id: 6,
+      title: 'Samarpan ',
+      category: 'fullstack',
+      description: 'real-time blood and platelet donor connection platform that brings donors and patients together to save lives.',
+      longDescription: 'Samarpan is a comprehensive blood donation management platform designed to connect donors with patients in need of blood and platelets. Built with modern web technologies, it enables real-time connections, efficient donor management, and streamlined administrative operations.',
+      image: 'https://i.ibb.co/mrDt2xgp/Screenshot-2025-11-01-095150.png',
+      technologies: [ 'Next.Js', 'Express.js', 'API','MongoDb', 'Google OAuth'],
+      liveUrl: 'https://samarpan-mu.vercel.app/',
+      githubUrl: 'https://github.com/Sakshamshakya319/Samarpan'
     }
   ];
 
@@ -80,10 +93,10 @@ const Portfolio = () => {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             My <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Portfolio</span>
           </h2>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto">
+          <p className={`text-lg max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
             A collection of projects that showcase my skills and passion for creating exceptional digital experiences
           </p>
         </div>
@@ -97,7 +110,9 @@ const Portfolio = () => {
               className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
                 selectedCategory === category.id
                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                  : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
+                  : isDark
+                    ? 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
               }`}
             >
               <Filter className="w-4 h-4 inline mr-2" />
@@ -111,7 +126,11 @@ const Portfolio = () => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              className={`group backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer ${
+                isDark
+                  ? 'bg-slate-800 border-slate-700 hover:bg-slate-700'
+                  : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
+              }`}
               onClick={() => setSelectedProject(project)}
             >
               {/* Project Image */}
@@ -152,21 +171,29 @@ const Portfolio = () => {
 
               {/* Project Info */}
               <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-                <p className="text-white/60 mb-4 line-clamp-2">{project.description}</p>
+                <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h3>
+                <p className={`mb-4 line-clamp-2 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>{project.description}</p>
                 
                 {/* Technologies */}
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.slice(0, 3).map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-white/10 text-white/70 text-sm rounded-full"
+                      className={`px-3 py-1 text-sm rounded-full ${
+                        isDark
+                          ? 'bg-slate-700 text-slate-200'
+                          : 'bg-gray-200 text-gray-900'
+                      }`}
                     >
                       {tech}
                     </span>
                   ))}
                   {project.technologies.length > 3 && (
-                    <span className="px-3 py-1 bg-white/10 text-white/70 text-sm rounded-full">
+                    <span className={`px-3 py-1 text-sm rounded-full ${
+                      isDark
+                        ? 'bg-slate-700 text-slate-200'
+                        : 'bg-gray-200 text-gray-900'
+                    }`}>
                       +{project.technologies.length - 3}
                     </span>
                   )}
@@ -179,7 +206,11 @@ const Portfolio = () => {
         {/* Project Modal */}
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
+            <div className={`rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border ${
+              isDark
+                ? 'bg-slate-800 border-slate-700'
+                : 'bg-white border-gray-300'
+            }`}>
               {/* Modal Header */}
               <div className="relative">
                 <img
@@ -197,17 +228,21 @@ const Portfolio = () => {
 
               {/* Modal Content */}
               <div className="p-8">
-                <h3 className="text-3xl font-bold text-white mb-4">{selectedProject.title}</h3>
-                <p className="text-white/70 mb-6 leading-relaxed">{selectedProject.longDescription}</p>
+                <h3 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>{selectedProject.title}</h3>
+                <p className={`mb-6 leading-relaxed ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>{selectedProject.longDescription}</p>
 
                 {/* Technologies */}
                 <div className="mb-6">
-                  <h4 className="text-lg font-semibold text-white mb-3">Technologies Used</h4>
+                  <h4 className={`text-lg font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Technologies Used</h4>
                   <div className="flex flex-wrap gap-3">
                     {selectedProject.technologies.map((tech, index) => (
                       <span
                         key={index}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-600/20 text-white border border-white/10 rounded-lg"
+                        className={`px-4 py-2 border rounded-lg ${
+                          isDark
+                            ? 'bg-slate-700 text-slate-200 border-slate-600'
+                            : 'bg-gradient-to-r from-blue-100 to-purple-100 text-gray-900 border-gray-300'
+                        }`}
                       >
                         {tech}
                       </span>
@@ -233,7 +268,11 @@ const Portfolio = () => {
                       href={selectedProject.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 border border-white/20"
+                      className={`flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-300 border ${
+                        isDark
+                          ? 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600'
+                          : 'bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200'
+                      }`}
                     >
                       <Github className="w-5 h-5 mr-2" />
                       View Source Code
