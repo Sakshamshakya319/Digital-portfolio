@@ -15,7 +15,7 @@ const Extracurricular = () => {
     {
       icon: BookOpenText,
       title: 'Gyandeep',
-      category: 'Social Work',
+      category: 'Education',
       description: 'Spreading the light of knowledge, empowering underprivileged children, and inspiring NSS volunteers to create a brighter, educated future.',
       details: ['Social Worker', 'Gyandeep NGO', 'Underprivileged children', 'Educational resources', '1 year experience'],
       color: 'from-blue-500 to-cyan-500',
