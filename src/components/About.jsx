@@ -68,17 +68,7 @@ const About = () => {
                 </div>
                 <p className={isDark ? 'text-slate-300' : 'text-gray-700'}>5+ Years</p>
               </div>
-              <div className={`backdrop-blur-sm rounded-xl p-4 border ${
-                isDark
-                  ? 'bg-slate-800 border-slate-700'
-                  : 'bg-gray-50 border-gray-300'
-              }`}>
-                <div className="flex items-center mb-2">
-                  <Coffee className="w-5 h-5 text-orange-400 mr-2" />
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Coffee/Day</span>
-                </div>
-                <p className={isDark ? 'text-slate-300' : 'text-gray-700'}>4+ Cups</p>
-              </div>
+              
               <div className={`backdrop-blur-sm rounded-xl p-4 border ${
                 isDark
                   ? 'bg-slate-800 border-slate-700'
