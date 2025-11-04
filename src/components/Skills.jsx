@@ -60,7 +60,7 @@ const Skills = () => {
       icon: Smartphone,
       color: 'from-indigo-500 to-purple-500',
       skills: [
-        { name: 'React Native', level: 69 },
+        { name: 'React Native', level: 57 },
         { name: 'Android Development', level: 65 },
         { name: 'Ionic', level: 80 },
       ]
