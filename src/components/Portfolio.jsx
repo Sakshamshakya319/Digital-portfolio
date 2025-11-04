@@ -18,6 +18,17 @@ const Portfolio = () => {
   const projects = [
     {
       id: 1,
+      title: 'Samarpan ',
+      category: 'fullstack',
+      description: 'real-time blood and platelet donor connection platform that brings donors and patients together to save lives.',
+      longDescription: 'Samarpan is a comprehensive blood donation management platform designed to connect donors with patients in need of blood and platelets. Built with modern web technologies, it enables real-time connections, efficient donor management, and streamlined administrative operations.',
+      image: 'https://i.ibb.co/mrDt2xgp/Screenshot-2025-11-01-095150.png',
+      technologies: [ 'Next.Js', 'Express.js', 'API','MongoDb', 'Google OAuth'],
+      liveUrl: 'https://samarpan-mu.vercel.app/',
+      githubUrl: 'https://github.com/Sakshamshakya319/Samarpan'
+    },
+    {
+      id: 2,
       title: 'Socio.io',
       category: 'fullstack',
       description: 'A Chrome extension that filters and moderates inappropriate content on the web.',
@@ -28,7 +39,7 @@ const Portfolio = () => {
       githubUrl: 'https://github.com/Org-Socio/socio.io'
     },
     {
-      id: 2,
+      id: 3,
       title: 'LPU NSS BLOG WEBSITE',
       category: 'web',
       description: 'Blog website for LPU NSS',
@@ -37,50 +48,6 @@ const Portfolio = () => {
       technologies: ['HTML', 'SQL', 'PHP', 'Javascript', 'Bootstrap'],
       liveUrl: 'https://lpunss.in',
       githubUrl: 'https://github.com'
-    },
-    {
-      id: 3,
-      title: 'Weather Mobile App',
-      category: 'web',
-      description: 'Cross-platform weather app with beautiful UI',
-      longDescription: 'Created a cross-platform mobile application using React Native that provides weather forecasts, interactive maps, weather alerts, location-based services, and offline capabilities. Features beautiful animations and intuitive user interface.',
-      image: 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=800',
-      technologies: ['React Native', 'OpenWeather API', 'AsyncStorage'],
-      liveUrl: 'https://weather-website-sakshamshakya337.vercel.app/',
-      githubUrl: 'https://github.com/sakshamshakya337/weather-website'
-    },
-    {
-      id: 4,
-      title: 'File Converter',
-      category: 'web',
-      description: 'To convert all files at one place',
-      longDescription: 'The File Converter project is a simple and efficient tool designed to convert files from one format to another with ease. It supports multiple file types, ensuring users can quickly transform documents, images, audio, or video files into their desired formats. With a clean interface and fast processing, the converter eliminates compatibility issues and enhances productivity. Whether for personal, academic, or professional use, it provides a reliable, hassle-free solution for all file conversion needs.',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTFBqPGDNTZ1ruK72-e_ddZwdfROkIiqXgoDU_Rvg29qMGWbuVTKY_7p5SatgqcbBEaXc',
-      technologies: ['Javascript', 'websocket', 'User Research'],
-      liveUrl: 'http://file-converter-gilt.vercel.app/',
-      githubUrl: 'https://github.com/sakshamshakya337/File-converter'
-    },
-    {
-      id: 5,
-      title: 'Language Translator',
-      category: 'fullstack',
-      description: 'Full-featured Language Translator with All Languages',
-      longDescription: 'The Language Translator project is a smart and user-friendly tool that allows users to instantly translate text across multiple languages. Designed with simplicity and accuracy in mind, it helps break communication barriers by providing quick and reliable translations for everyday conversations, academic needs, or professional use. With a clean interface and efficient processing, it supports seamless interaction, making it an ideal solution for students, travelers, and businesses looking to connect globally with ease.',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXGdS-QZnRBYySucL6GvpYuiqalg-6zDUxIQ&s',
-      technologies: [ 'Javascript', 'Express.js', 'API'],
-      liveUrl: 'https://language-translator-two.vercel.app/',
-      githubUrl: 'https://github.com/sakshamshakya337/Language-Translator'
-    },
-    {
-      id: 6,
-      title: 'Samarpan ',
-      category: 'fullstack',
-      description: 'real-time blood and platelet donor connection platform that brings donors and patients together to save lives.',
-      longDescription: 'Samarpan is a comprehensive blood donation management platform designed to connect donors with patients in need of blood and platelets. Built with modern web technologies, it enables real-time connections, efficient donor management, and streamlined administrative operations.',
-      image: 'https://i.ibb.co/mrDt2xgp/Screenshot-2025-11-01-095150.png',
-      technologies: [ 'Next.Js', 'Express.js', 'API','MongoDb', 'Google OAuth'],
-      liveUrl: 'https://samarpan-mu.vercel.app/',
-      githubUrl: 'https://github.com/Sakshamshakya319/Samarpan'
     }
   ];
 
