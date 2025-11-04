@@ -14,7 +14,7 @@ const Footer = () => {
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">S</span>
               </div>
-              <span className="text-gray-900 font-semibold text-xl">Portfolio</span>
+              <span className="text-gray-900 font-semibold text-xl">Shakya</span>
             </div>
             <p className="text-gray-700 max-w-sm">
               Full Stack Developer passionate about creating exceptional digital experiences 
