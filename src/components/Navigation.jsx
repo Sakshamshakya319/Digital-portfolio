@@ -37,7 +37,7 @@ const Navigation = ({ activeSection }) => {
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className={`ml-2 font-semibold text-xl ${isDark ? 'text-white' : 'text-gray-900'}`}>Portfolio</span>
+            <span className={`ml-2 font-semibold text-xl ${isDark ? 'text-white' : 'text-gray-900'}`}>Shakya</span>
           </div>
 
           {/* Desktop Navigation */}

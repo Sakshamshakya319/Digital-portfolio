@@ -14,7 +14,7 @@ const Skills = () => {
         { name: 'JavaScript/TypeScript', level: 95 },
         { name: 'HTML/CSS', level: 95 },
         { name: 'Tailwind CSS', level: 85 },
-        { name: 'Vue.js', level: 80 },
+        { name: 'Vue.js', level: 45 },
         // { name: 'Next.js', level: 85 }
       ]
     },
@@ -71,8 +71,6 @@ const Skills = () => {
       color: 'from-yellow-500 to-orange-500',
       skills: [
         { name: 'VS Code', level: 95 },
-        { name: 'Webpack', level: 80 },
-        { name: 'Jest/Testing', level: 85 },
         { name: 'Project Management', level: 85 },
         { name: 'Team Leadership', level: 80 }
       ]
