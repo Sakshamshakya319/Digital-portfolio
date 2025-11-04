@@ -30,6 +30,15 @@ const Extracurricular = () => {
       details: ['Social Work', '200+ members', 'Weekly events'],
       color: 'from-indigo-500 to-purple-500',
       image: 'https://i.ibb.co/35tcbbwF/unit-yogdaan-1730035420-3488112379744448793-68912261486.jpg'
+    },
+    {
+      icon: Users,
+      title: 'Happiness Sharing',
+      category: 'Exploration',
+      description: 'Sharing happiness like a festival by distributing sweets during Diwali.',
+      details: ['Social Work', 'Sharing Happiness', 'Sweets Districution'],
+      color: 'from-indigo-500 to-purple-500',
+      image: 'https://i.ibb.co/VcNw6DQr/lpu-nss-1699726222-3233860400092909781-57008579889.jpg'
     }
   ];
 
