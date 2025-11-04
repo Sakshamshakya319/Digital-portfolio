@@ -19,7 +19,7 @@ const Extracurricular = () => {
       description: 'Spreading the light of knowledge, empowering underprivileged children, and inspiring NSS volunteers to create a brighter, educated future.',
       details: ['Social Worker', 'Gyandeep NGO', 'Underprivileged children', 'Educational resources', '1 year experience'],
       color: 'from-blue-500 to-cyan-500',
-      image: 'https://images.pexels.com/photos/606541/pexels-photo-606541.jpeg?auto=compress&cs=tinysrgb&w=600'
+      image: 'https://i.ibb.co/DfjJx7cs/unit-yogdaan-1727543713-3467210426755704095-68912261486.jpg'
     
     },
     {
@@ -29,7 +29,7 @@ const Extracurricular = () => {
       description: 'Organizer of local social service for the community with the Motto of “NOT ME, BUT YOU”.',
       details: ['Social Work', '200+ members', 'Weekly events'],
       color: 'from-indigo-500 to-purple-500',
-      image: 'https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=600'
+      image: 'https://i.ibb.co/35tcbbwF/unit-yogdaan-1730035420-3488112379744448793-68912261486.jpg'
     }
   ];
 
