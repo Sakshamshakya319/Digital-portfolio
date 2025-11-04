@@ -30,15 +30,6 @@ const Extracurricular = () => {
       details: ['Social Work', '200+ members', 'Weekly events'],
       color: 'from-indigo-500 to-purple-500',
       image: 'https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=600'
-    },
-    {
-      icon: Heart,
-      title: 'Volunteer Work',
-      category: 'Service',
-      description: 'Teaching coding skills to underprivileged youth.',
-      details: ['Code for Good volunteer', '10+ nonprofits helped', 'Youth coding instructor'],
-      color: 'from-red-500 to-pink-500',
-      image: 'https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=600'
     }
   ];
 
