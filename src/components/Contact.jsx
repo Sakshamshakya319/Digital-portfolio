@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, Calendar } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, Calendar, Instagram } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Contact = () => {
@@ -87,13 +87,6 @@ const Contact = () => {
       value: 'Maheru,Punjab',
       href: 'https://www.google.com/maps/place/LPU+FRONT+ENTRANCE+GATE/@31.2569601,75.6997863,15.74z/data=!4m6!3m5!1s0x391a5fca6a8887f9:0x48044ce5b6683280!8m2!3d31.2607955!4d75.7069368!16s%2Fg%2F11t6wp94qk?entry=ttu&g_ep=EgoyMDI1MDgyNC4wIKXMDSoASAFQAw%3D%3D',
       color: 'from-orange-500 to-red-500'
-    },
-    {
-      icon: Calendar,
-      label: 'Schedule a Call',
-      value: 'Book a meeting',
-      href: 'https://calendar.app.google/LbAJFzHwVvMimTD39',
-      color: 'from-purple-500 to-pink-500'
     }
   ];
 
@@ -108,6 +101,12 @@ const Contact = () => {
       icon: Linkedin,
       label: 'LinkedIn',
       href: 'https://linkedin.com/in/sakshamshakya',
+      color: 'hover:text-blue-400'
+    },
+    {
+      icon: Instagram,
+      label: 'Instagram',
+      href: 'https://www.instagram.com/sakshamshakya975/',
       color: 'hover:text-blue-400'
     }
   ];

@@ -1,7 +1,9 @@
 import React from 'react';
 import { PersonStanding, Camera,BookOpenText, Plane, BookOpen, Users, Heart, Gamepad2, Mountain } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Extracurricular = () => {
+  const { isDark } = useTheme();
   const activities = [
     {
       icon: PersonStanding,
@@ -33,12 +35,12 @@ const Extracurricular = () => {
     },
     {
       icon: Users,
-      title: 'Happiness Sharing',
-      category: 'Exploration',
-      description: 'Sharing happiness like a festival by distributing sweets during Diwali.',
-      details: ['Social Work', 'Sharing Happiness', 'Sweets Districution'],
+      title: 'Organised 7 Days Camp',
+      category: 'Community Development Camp',
+      description: '7 continuous days of community service in a village or adopted area — focusing on development, awareness, and social work.',
+      details: ['Social Work', 'Sharing Happiness', 'Community Development'],
       color: 'from-indigo-500 to-purple-500',
-      image: 'https://i.ibb.co/VcNw6DQr/lpu-nss-1699726222-3233860400092909781-57008579889.jpg'
+      image: 'https://i.ibb.co/7tcBfTTj/Whats-App-Image-2025-11-10-at-21-41-32-0123190e.jpg'
     }
   ];
 
@@ -50,14 +52,14 @@ const Extracurricular = () => {
     : activities.filter(activity => activity.category === selectedCategory);
 
   return (
-    <section id="extracurricular" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="extracurricular" className={`${isDark ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-700'} py-20 px-4 sm:px-6 lg:px-8`}>
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
             Extra<span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">curricular</span> Activities
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-lg max-w-2xl mx-auto`}>
             Beyond coding, I'm passionate about various creative and community-driven activities that shape my perspective and fuel my creativity
           </p>
         </div>
@@ -71,7 +73,7 @@ const Extracurricular = () => {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 selectedCategory === category
                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                  : `${isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900'}`
               }`}
             >
               {category}
@@ -86,7 +88,7 @@ const Extracurricular = () => {
             return (
               <div
                 key={index}
-                className="bg-gray-50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-300 hover:bg-gray-100 transition-all duration-300 group"
+                className={`${isDark ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-gray-50 border-gray-300 hover:bg-gray-100'} backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 group`}
               >
                 {/* Activity Image */}
                 <div className="relative h-48 overflow-hidden">
@@ -110,17 +112,17 @@ const Extracurricular = () => {
 
                 {/* Activity Content */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{activity.title}</h3>
-                  <p className="text-gray-700 mb-4 leading-relaxed">{activity.description}</p>
+                  <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>{activity.title}</h3>
+                  <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'} mb-4 leading-relaxed`}>{activity.description}</p>
 
                   {/* Activity Details */}
                   <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-gray-800 mb-3">Key Highlights:</h4>
+                    <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-800'} mb-3`}>Key Highlights:</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {activity.details.map((detail, detailIndex) => (
                         <div
                           key={detailIndex}
-                          className="flex items-center text-gray-700 text-sm"
+                          className={`flex items-center ${isDark ? 'text-gray-400' : 'text-gray-700'} text-sm`}
                         >
                           <div className="w-1 h-1 bg-blue-400 rounded-full mr-2 flex-shrink-0"></div>
                           {detail}
@@ -135,10 +137,10 @@ const Extracurricular = () => {
         </div>
 
         {/* Personal Philosophy */}
-        <div className="mt-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-8 border border-gray-300">
+        <div className={`mt-16 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gradient-to-r from-blue-100 to-purple-100 border-gray-300'} rounded-2xl p-8 border`}>
           <div className="text-center max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Life Philosophy</h3>
-            <p className="text-gray-700 text-lg leading-relaxed mb-6">
+            <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>Life Philosophy</h3>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'} text-lg leading-relaxed mb-6`}>
               "I believe that diverse experiences outside of technology make me a better developer. 
               Each activity teaches me something new about problem-solving, creativity, and human connection 
               that I bring back to my work. Whether it's the patience learned from rock climbing, 
@@ -148,11 +150,11 @@ const Extracurricular = () => {
             <div className="flex justify-center space-x-8 text-center">
               <div>
                 <div className="text-2xl font-bold text-blue-400 mb-1">8+</div>
-                <div className="text-gray-700 text-sm">Active Hobbies</div>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-700'} text-sm`}>Active Hobbies</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-purple-400 mb-1">1000+</div>
-                <div className="text-gray-700 text-sm">Volunteer Hours</div>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-700'} text-sm`}>Volunteer Hours</div>
               </div>
             </div>
           </div>

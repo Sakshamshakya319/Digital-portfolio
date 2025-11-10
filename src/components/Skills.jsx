@@ -1,6 +1,7 @@
 import React from 'react';
 import { Code, Palette, Database, Cloud, Smartphone, Zap } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import SoftSkills from './SoftSkills';
 
 const Skills = () => {
   const { isDark } = useTheme();
@@ -78,6 +79,7 @@ const Skills = () => {
   ];
 
   return (
+    <>
     <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
@@ -158,6 +160,8 @@ const Skills = () => {
         </div>
       </div>
     </section>
+    <SoftSkills />
+    </>
   );
 };
 

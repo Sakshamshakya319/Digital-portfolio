@@ -1,11 +1,13 @@
 import React from 'react';
 import { Heart, Code, Coffee } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Footer = () => {
+  const { isDark } = useTheme();
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-100 backdrop-blur-sm border-t border-gray-300">
+    <footer className={`${isDark ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-700'} backdrop-blur-sm border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
@@ -14,9 +16,9 @@ const Footer = () => {
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">S</span>
               </div>
-              <span className="text-gray-900 font-semibold text-xl">Shakya</span>
+              <span className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold text-xl`}>Shakya</span>
             </div>
-            <p className="text-gray-700 max-w-sm">
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'} max-w-sm`}>
               Full Stack Developer passionate about creating exceptional digital experiences 
               through clean code and beautiful design.
             </p>
@@ -24,7 +26,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-gray-900 font-semibold mb-4">Quick Links</h3>
+            <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold mb-4`}>Quick Links</h3>
             <div className="space-y-2">
               {[
                 { label: 'About', href: '#about' },
@@ -36,7 +38,7 @@ const Footer = () => {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="block text-gray-700 hover:text-gray-900 transition-colors duration-300"
+                  className={`block ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors duration-300`}
                 >
                   {link.label}
                 </a>
@@ -46,23 +48,23 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-gray-900 font-semibold mb-4">Get In Touch</h3>
+            <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold mb-4`}>Get In Touch</h3>
             <div className="space-y-2">
-              <p className="text-gray-700">saksham.shakya@lpu.in</p>
-              <p className="text-gray-700">+91 9411850565</p>
-              <p className="text-gray-700">Maheru, Punjab</p>
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>saksham.shakya@lpu.in</p>
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>+91 9411850565</p>
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>Maheru, Punjab</p>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-8 border-t border-gray-300">
+        <div className={`pt-8 border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-700 text-sm mb-4 md:mb-0">
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'} text-sm mb-4 md:mb-0`}>
               © {currentYear} Saksham Shakya. All rights reserved.
             </p>
             
-            <div className="flex items-center space-x-2 text-gray-700 text-sm">
+            <div className={`${isDark ? 'text-gray-400' : 'text-gray-700'} flex items-center space-x-2 text-sm`}>
               <span>Made with</span>
               <Heart className="w-4 h-4 text-red-400 fill-current" />
               <span>and</span>
