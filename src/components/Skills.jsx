@@ -136,7 +136,7 @@ const Skills = () => {
         <div className="mt-16 grid md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">5+</span>
+              <span className="text-2xl font-bold text-white">4+</span>
             </div>
             <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Years of Experience</h4>
             <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Continuous learning and professional growth</p>
@@ -144,7 +144,7 @@ const Skills = () => {
           
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">50+</span>
+              <span className="text-2xl font-bold text-white">25+</span>
             </div>
             <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Projects Completed</h4>
             <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>From small websites to large-scale applications</p>
@@ -152,7 +152,7 @@ const Skills = () => {
           
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">17+</span>
+              <span className="text-2xl font-bold text-white">10+</span>
             </div>
             <h4 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Technologies</h4>
             <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Always exploring the latest tools and frameworks</p>
