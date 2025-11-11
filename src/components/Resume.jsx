@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const Resume = () => {
   const { isDark } = useTheme();
-  const RESUME_URL = 'https://drive.google.com/file/d/1JIuXVTi9n92KI5-aUgxuKr0mFqFIrYcU/view?usp=sharing';
+  const RESUME_URL = 'https://drive.google.com/file/d/1rjiPT51D3za2txXpvXrIUvmJT4T2U7jf/view?usp=sharing';
 
   const handleDownload = () => {
     window.open(RESUME_URL, '_blank', 'noopener,noreferrer');
