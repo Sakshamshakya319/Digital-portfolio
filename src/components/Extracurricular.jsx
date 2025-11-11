@@ -36,7 +36,7 @@ const Extracurricular = () => {
     {
       icon: Users,
       title: 'Organised 7 Days Camp',
-      category: 'Community Development Camp',
+      category: 'Exploration',
       description: '7 continuous days of community service in a village or adopted area — focusing on development, awareness, and social work.',
       details: ['Social Work', 'Sharing Happiness', 'Community Development'],
       color: 'from-indigo-500 to-purple-500',
