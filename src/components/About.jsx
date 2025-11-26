@@ -20,28 +20,18 @@ const About = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Image & Quick Stats */}
-          <div className="space-y-8">
-            <div className="relative">
-              <div className={`w-full h-96 rounded-2xl backdrop-blur-sm border flex items-center justify-center ${
-                isDark
-                  ? 'bg-gradient-to-r from-slate-700 to-slate-800 border-slate-600'
-                  : 'bg-gradient-to-r from-blue-100 to-purple-100 border-gray-300'
-              }`}>
-                <div className="text-center">
-                  <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 mb-4">
-                    <div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center">
-                      <div className="w-full h-full rounded-full overflow-hidden bg-gray-300">
-                        <img
-                          src="../profile.jpg"
-                          alt="Profile"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <p className={isDark ? 'text-white' : 'text-gray-700'}>Saksham Shakya</p>
+          <div className="space-y-8 overflow-visible">
+            <div className="relative flex flex-col items-center">
+              <div className="w-64 h-80 mb-6 rounded-2xl overflow-hidden shadow-2xl border-2 bg-gradient-to-br from-blue-400 to-purple-500 p-1">
+                <div className="w-full h-full rounded-xl overflow-hidden bg-gray-900">
+                  <img
+                    src="../profile.jpg"
+                    alt="Profile"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
               </div>
+              <p className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Saksham Shakya</p>
             </div>
 
             {/* Quick Stats */}

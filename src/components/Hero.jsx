@@ -17,7 +17,7 @@ const Hero = () => {
       <div className="max-w-4xl mx-auto text-center">
         {/* Profile Image */}
         <div className="mb-8">
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1">
+          {/* <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1">
             <div className="w-full h-full rounded-full overflow-hidden bg-gray-300">
               <img
                 src="../profile.jpg"
@@ -25,7 +25,7 @@ const Hero = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
 
