@@ -1,21 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
-import Navigation from './components/Navigation';
-import Hero from './components/Hero';
-import About from './components/About';
-import Resume from './components/Resume';
-import Skills from './components/Skills';
-import Portfolio from './components/Portfolio';
-import Achievements from './components/Achievements';
-import Extracurricular from './components/Extracurricular';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import AppContent from './AppContent';
+import { AuthProvider } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
+
+// Public components
+import Portfolio from './pages/Portfolio';
+import BlogList from './pages/BlogList';
+import BlogPost from './pages/BlogPost';
+
+// Admin components
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen">
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Portfolio />} />
+              <Route path="/blog" element={<BlogList />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              
+              {/* Admin routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route 
+                path="/admin/*" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+              }}
+            />
+          </div>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
