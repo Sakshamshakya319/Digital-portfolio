@@ -143,6 +143,15 @@ router.post('/', async (req, res) => {
     const blog = new Blog(blogData);
     await blog.save();
 
+    // Send real-time notification if blog is published
+    if (blog.isPublished && req.app.locals.notificationService) {
+      try {
+        req.app.locals.notificationService.broadcastNewBlog(blog);
+      } catch (error) {
+        console.error('Error sending real-time notification:', error);
+      }
+    }
+
     res.status(201).json(blog);
   } catch (error) {
     if (error.code === 11000) {
@@ -156,6 +165,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const updateData = { ...req.body };
+    const wasPublished = await Blog.findById(req.params.id).select('isPublished');
+    
     if (updateData.isPublished && !updateData.publishedAt) {
       updateData.publishedAt = new Date();
     }
@@ -167,6 +178,21 @@ router.put('/:id', async (req, res) => {
 
     if (!blog) {
       return res.status(404).json({ message: 'Blog not found' });
+    }
+
+    // Send real-time notification for newly published blogs or updates
+    if (req.app.locals.notificationService) {
+      try {
+        if (blog.isPublished && !wasPublished?.isPublished) {
+          // Newly published blog
+          req.app.locals.notificationService.broadcastNewBlog(blog);
+        } else if (blog.isPublished && wasPublished?.isPublished) {
+          // Updated published blog
+          req.app.locals.notificationService.broadcastBlogUpdate(blog);
+        }
+      } catch (error) {
+        console.error('Error sending real-time notification:', error);
+      }
     }
 
     res.json(blog);
