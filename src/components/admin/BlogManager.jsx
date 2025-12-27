@@ -274,14 +274,17 @@ const BlogEditor = ({ blog, onClose }) => {
 
       const toastId = toast.loading('Uploading image...');
       try {
-        const res = await api.post('/upload', formData);
+        const res = await api.post('/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         const url = res.data.url;
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection();
         editor.insertEmbed(range.index, 'image', url);
         toast.success('Image uploaded', { id: toastId });
       } catch (err) {
-        toast.error('Upload failed', { id: toastId });
+        const message = err?.response?.data?.message || 'Upload failed';
+        toast.error(message, { id: toastId });
       }
     };
   };
@@ -354,8 +357,13 @@ const BlogEditor = ({ blog, onClose }) => {
     try {
       const blogData = {
         ...formData,
+        excerpt: (formData.excerpt || '').slice(0, 200),
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
       };
+
+      if (!blogData.title || !blogData.content || !blogData.category) {
+        throw new Error('Title, content, and category are required');
+      }
 
       if (blog) {
         await blogAPI.update(blog._id, blogData);
@@ -368,7 +376,8 @@ const BlogEditor = ({ blog, onClose }) => {
       onClose();
     } catch (error) {
       console.error('Error saving blog:', error);
-      toast.error('Failed to save blog post');
+      const message = error?.response?.data?.message || 'Failed to save blog post';
+      toast.error(message);
     } finally {
       setSaving(false);
     }

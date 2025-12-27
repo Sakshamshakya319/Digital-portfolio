@@ -136,6 +136,10 @@ router.post('/', async (req, res) => {
         .replace(/(^-|-$)/g, '');
     }
 
+    if (blogData.isPublished && !blogData.publishedAt) {
+      blogData.publishedAt = new Date();
+    }
+
     const blog = new Blog(blogData);
     await blog.save();
 
@@ -151,11 +155,15 @@ router.post('/', async (req, res) => {
 // Update blog
 router.put('/:id', async (req, res) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const updateData = { ...req.body };
+    if (updateData.isPublished && !updateData.publishedAt) {
+      updateData.publishedAt = new Date();
+    }
+
+    const blog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true
+    });
 
     if (!blog) {
       return res.status(404).json({ message: 'Blog not found' });

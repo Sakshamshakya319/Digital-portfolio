@@ -1,7 +1,15 @@
 import axios from 'axios';
 
-const rawBase = import.meta.env.VITE_API_URL || '/api';
-const baseURL = rawBase.endsWith('/api') ? rawBase : `${rawBase}/api`;
+const baseURL = (() => {
+  const raw = import.meta.env.VITE_API_URL || '';
+  if (raw) return raw.endsWith('/api') ? raw : `${raw}/api`;
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin || '';
+    const isProdSite = /sakshamshakya\.tech$/i.test(origin);
+    if (isProdSite) return 'https://digital-portfolio-2.onrender.com/api';
+  }
+  return '/api';
+})();
 const api = axios.create({
   baseURL,
   timeout: 15000,
