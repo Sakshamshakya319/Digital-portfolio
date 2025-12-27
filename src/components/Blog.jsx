@@ -119,7 +119,7 @@ const Blog = () => {
                     <img
                       src={getImageUrl(blog.featuredImage) || getImageUrl('/api/placeholder/400/250')}
                       alt={blog.title}
-                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                      className="w-full h-48 object-contain md:object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     

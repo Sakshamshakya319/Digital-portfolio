@@ -315,7 +315,7 @@ const BlogPost = () => {
                 <img
                   src={getImageUrl(blog.featuredImage)}
                   alt={blog.title}
-                  className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl"
+                  className="w-full h-64 md:h-96 object-contain md:object-cover rounded-2xl shadow-2xl"
                 />
               </motion.div>
             </div>
