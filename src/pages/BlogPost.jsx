@@ -32,10 +32,32 @@ const BlogPost = () => {
     fetchBlog();
   }, [slug]);
 
+  const getImageUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith('/api')) {
+      const base = import.meta.env.VITE_API_URL || '';
+      return `${base}${url.slice(4)}`;
+    }
+    return url;
+  };
+
+  const normalizeContentImages = (html) => {
+    if (!html) return html;
+    const base = import.meta.env.VITE_API_URL || '';
+    return html.replace(/src="\/api([^"]*)"/g, (_m, path) => `src="${base}${path}"`);
+  };
+
   const fetchBlog = async () => {
     try {
       const response = await blogAPI.getBySlug(slug);
-      setBlog(response.data);
+      const data = response.data;
+      if (data.featuredImage) {
+        data.featuredImage = getImageUrl(data.featuredImage);
+      }
+      if (data.content) {
+        data.content = normalizeContentImages(data.content);
+      }
+      setBlog(data);
       setLikes(response.data.likes || 0);
       
       // Check if user has liked this blog (using localStorage for demo)
@@ -291,7 +313,7 @@ const BlogPost = () => {
                 className="max-w-4xl mx-auto"
               >
                 <img
-                  src={blog.featuredImage}
+                  src={getImageUrl(blog.featuredImage)}
                   alt={blog.title}
                   className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl"
                 />
