@@ -41,12 +41,28 @@ mongoose.connect(MONGODB_URI)
 app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for easier development/deployment, or configure it properly
 }));
+const allowedOrigins = new Set([
+  process.env.FRONTEND_URL,
+  'https://www.sakshamshakya.tech',
+  'https://sakshamshakya.tech',
+  'http://localhost:5173',
+  'http://localhost:3000'
+]);
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL,  'https://www.sakshamshakya.tech']
-    : ['http://localhost:5173', 'http://localhost:3000'],
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.has(origin)) return callback(null, true);
+    const withoutWww = origin.replace('://www.', '://');
+    const withWww = origin.includes('://www.') ? origin : origin.replace('://', '://www.');
+    if (allowedOrigins.has(withoutWww) || allowedOrigins.has(withWww)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.options('*', cors());
 
 // Rate limiting
 const limiter = rateLimit({
