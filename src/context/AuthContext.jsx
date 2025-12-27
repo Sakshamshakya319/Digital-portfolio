@@ -38,16 +38,22 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await api.post('/auth/login', { username, password });
-      const { token, user } = response.data;
+      const { token, user } = response.data || {};
+      if (!token || !user) {
+        return { success: false, message: 'Login failed: invalid server response' };
+      }
       
       localStorage.setItem('token', token);
       setUser(user);
+      try {
+        await verifyToken();
+      } catch {}
       
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Login failed' 
+        message: (error.response?.data?.message) || (error.message?.includes('Network') ? 'Network error contacting server' : 'Login failed') 
       };
     }
   };
