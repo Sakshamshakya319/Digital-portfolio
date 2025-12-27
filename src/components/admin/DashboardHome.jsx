@@ -23,10 +23,12 @@ const DashboardHome = () => {
     contacts: 0,
     skills: 0
   });
+  const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
+    fetchRecentActivity();
   }, []);
 
   const fetchStats = async () => {
@@ -48,6 +50,102 @@ const DashboardHome = () => {
       console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecentActivity = async () => {
+    try {
+      const [blogsRes, projectsRes, contactsRes] = await Promise.all([
+        blogAPI.getAllAdmin().catch(() => ({ data: { blogs: [] } })),
+        projectAPI.getAll().catch(() => ({ data: [] })),
+        contactAPI.getAll().catch(() => ({ data: { contacts: [] } }))
+      ]);
+
+      const activities = [];
+
+      // Add recent blogs
+      const recentBlogs = (blogsRes.data.blogs || [])
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 3);
+      
+      recentBlogs.forEach(blog => {
+        activities.push({
+          id: `blog-${blog._id}`,
+          type: 'blog',
+          title: 'New blog post published',
+          description: blog.title,
+          date: new Date(blog.createdAt),
+          color: 'bg-blue-500',
+          icon: 'FileText'
+        });
+      });
+
+      // Add recent projects
+      const recentProjects = (projectsRes.data || [])
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 2);
+      
+      recentProjects.forEach(project => {
+        activities.push({
+          id: `project-${project._id}`,
+          type: 'project',
+          title: 'New project added',
+          description: project.title,
+          date: new Date(project.createdAt),
+          color: 'bg-purple-500',
+          icon: 'FolderOpen'
+        });
+      });
+
+      // Add recent contacts
+      const recentContacts = (contactsRes.data.contacts || [])
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 3);
+      
+      recentContacts.forEach(contact => {
+        activities.push({
+          id: `contact-${contact._id}`,
+          type: 'contact',
+          title: 'New contact message received',
+          description: `${contact.name}: ${contact.subject}`,
+          date: new Date(contact.createdAt),
+          color: 'bg-green-500',
+          icon: 'Mail'
+        });
+      });
+
+      // Sort all activities by date and take the most recent 6
+      const sortedActivities = activities
+        .sort((a, b) => b.date - a.date)
+        .slice(0, 6);
+
+      setRecentActivity(sortedActivities);
+    } catch (error) {
+      console.error('Error fetching recent activity:', error);
+    }
+  };
+
+  const getRelativeTime = (date) => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    return date.toLocaleDateString();
+  };
+
+  const getActivityIcon = (iconName) => {
+    switch (iconName) {
+      case 'FileText':
+        return FileText;
+      case 'FolderOpen':
+        return FolderOpen;
+      case 'Mail':
+        return Mail;
+      default:
+        return MessageSquare;
     }
   };
 
@@ -255,46 +353,48 @@ const DashboardHome = () => {
         }`}
       >
         <h2 className={`text-2xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Recent Activity</h2>
-        <div className="space-y-4">
-          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
-            isDark 
-              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
-              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
-          }`}>
-            <div className="w-3 h-3 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1">
-              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>New contact message received</p>
-              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Someone is interested in your services</p>
-              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>2 hours ago</p>
-            </div>
+        {recentActivity.length === 0 ? (
+          <div className="text-center py-8">
+            <MessageSquare className={`w-12 h-12 mx-auto mb-4 ${isDark ? 'text-slate-600' : 'text-gray-400'}`} />
+            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>No recent activity</p>
           </div>
-          
-          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
-            isDark 
-              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
-              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
-          }`}>
-            <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1">
-              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Blog post published successfully</p>
-              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Your latest article is now live</p>
-              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>1 day ago</p>
-            </div>
+        ) : (
+          <div className="space-y-4">
+            {recentActivity.map((activity) => {
+              const IconComponent = getActivityIcon(activity.icon);
+              return (
+                <div 
+                  key={activity.id}
+                  className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
+                    isDark 
+                      ? 'bg-slate-700/30 hover:bg-slate-700/40' 
+                      : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <div className={`w-3 h-3 ${activity.color} rounded-full mt-2 flex-shrink-0`}></div>
+                  <div className="flex-1">
+                    <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{activity.title}</p>
+                    <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'} line-clamp-1`}>
+                      {activity.description}
+                    </p>
+                    <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>
+                      {getRelativeTime(activity.date)}
+                    </p>
+                  </div>
+                  <div className={`p-2 rounded-lg ${
+                    isDark ? 'bg-slate-600/30' : 'bg-gray-100'
+                  }`}>
+                    <IconComponent className={`w-4 h-4 ${
+                      activity.type === 'blog' ? 'text-blue-500' :
+                      activity.type === 'project' ? 'text-purple-500' :
+                      'text-green-500'
+                    }`} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          
-          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
-            isDark 
-              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
-              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
-          }`}>
-            <div className="w-3 h-3 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1">
-              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>New project added to portfolio</p>
-              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Portfolio updated with latest work</p>
-              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>3 days ago</p>
-            </div>
-          </div>
-        </div>
+        )}
       </motion.div>
     </div>
   );
