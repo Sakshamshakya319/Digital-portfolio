@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, Home, User, FileText, Code, Briefcase, Mail, Sun, Moon, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
 const Navigation = ({ activeSection }) => {
@@ -35,8 +36,8 @@ const Navigation = ({ activeSection }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
-            <button
-              onClick={() => scrollToSection('home')}
+            <Link
+              to="/"
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                 activeSection === 'home'
                   ? 'bg-blue-600 text-white shadow-md'
@@ -47,7 +48,7 @@ const Navigation = ({ activeSection }) => {
             >
               <Home className="w-4 h-4 mr-2" />
               Home
-            </button>
+            </Link>
 
             <div
               className="relative"
@@ -70,24 +71,24 @@ const Navigation = ({ activeSection }) => {
               </button>
               {aboutOpenDesktop && (
                 <div className={`absolute mt-2 rounded-lg shadow-lg border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} min-w-[180px]`}>
-                  <button
-                    onClick={() => scrollToSection('about')}
+                  <Link
+                    to="/#about"
                     className={`w-full text-left px-4 py-2 rounded-t-lg ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                   >
                     About
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('skills')}
+                  </Link>
+                  <Link
+                    to="/#skills"
                     className={`w-full text-left px-4 py-2 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                   >
                     Skills
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('projects')}
+                  </Link>
+                  <Link
+                    to="/#projects"
                     className={`w-full text-left px-4 py-2 rounded-b-lg ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                   >
                     Projects
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -108,8 +109,8 @@ const Navigation = ({ activeSection }) => {
               Blogs
             </a>
 
-            <button
-              onClick={() => scrollToSection('contact')}
+            <Link
+              to="/#contact"
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                 activeSection === 'contact'
                   ? 'bg-blue-600 text-white shadow-md'
@@ -120,7 +121,7 @@ const Navigation = ({ activeSection }) => {
             >
               <Mail className="w-4 h-4 mr-2" />
               Contact Us
-            </button>
+            </Link>
             
             {/* Theme Toggle Button */}
             <button
@@ -172,8 +173,8 @@ const Navigation = ({ activeSection }) => {
               : 'bg-gray-50 border-gray-200'
           }`}>
             <div className="flex flex-col space-y-2 pt-4">
-              <button
-                onClick={() => scrollToSection('home')}
+              <Link
+                to="/"
                 className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeSection === 'home'
                     ? 'bg-blue-600 text-white shadow-md'
@@ -184,7 +185,7 @@ const Navigation = ({ activeSection }) => {
               >
                 <Home className="w-5 h-5 mr-3" />
                 Home
-              </button>
+              </Link>
 
               <div className={`rounded-lg ${isDark ? 'bg-slate-800' : 'bg-white'} border ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
                 <button
@@ -203,24 +204,24 @@ const Navigation = ({ activeSection }) => {
                 </button>
                 {aboutOpenMobile && (
                   <div className="flex flex-col">
-                    <button
-                      onClick={() => scrollToSection('about')}
+                    <Link
+                      to="/#about"
                       className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                     >
                       About
-                    </button>
-                    <button
-                      onClick={() => scrollToSection('skills')}
+                    </Link>
+                    <Link
+                      to="/#skills"
                       className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                     >
                       Skills
-                    </button>
-                    <button
-                      onClick={() => scrollToSection('projects')}
+                    </Link>
+                    <Link
+                      to="/#projects"
                       className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
                     >
                       Projects
-                    </button>
+                    </Link>
                   </div>
                 )}
               </div>
@@ -240,8 +241,8 @@ const Navigation = ({ activeSection }) => {
                 Blogs
               </a>
 
-              <button
-                onClick={() => scrollToSection('contact')}
+              <Link
+                to="/#contact"
                 className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeSection === 'contact'
                     ? 'bg-blue-600 text-white shadow-md'
@@ -252,7 +253,7 @@ const Navigation = ({ activeSection }) => {
               >
                 <Mail className="w-5 h-5 mr-3" />
                 Contact Us
-              </button>
+              </Link>
             </div>
           </div>
         )}
