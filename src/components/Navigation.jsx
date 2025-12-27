@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, Home, User, FileText, Code, Briefcase, Mail, Sun, Moon, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
 const Navigation = ({ activeSection }) => {
@@ -8,16 +8,27 @@ const Navigation = ({ activeSection }) => {
   const [aboutOpenDesktop, setAboutOpenDesktop] = useState(false);
   const [aboutOpenMobile, setAboutOpenMobile] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
   
   // Refs and timeouts for dropdown delay management
   const dropdownTimeoutRef = useRef(null);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
+  // Check if we're on the homepage
+  const isHomePage = location.pathname === '/';
+
   const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (isHomePage) {
+      // If on homepage, scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on other pages, navigate to homepage with hash
+      navigate(`/#${sectionId}`);
     }
     setIsOpen(false);
   };
@@ -196,12 +207,10 @@ const Navigation = ({ activeSection }) => {
               )}
             </div>
 
-            <a
-              href="/blog"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/blog"
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                activeSection === 'blog'
+                location.pathname === '/blog'
                   ? 'bg-blue-600 text-white shadow-md'
                   : isDark
                     ? 'text-slate-200 hover:text-white hover:bg-slate-700'
@@ -210,7 +219,7 @@ const Navigation = ({ activeSection }) => {
             >
               <FileText className="w-4 h-4 mr-2" />
               Blogs
-            </a>
+            </Link>
 
             <button
               onClick={() => handleNavClick('contact')}
@@ -369,20 +378,20 @@ const Navigation = ({ activeSection }) => {
                 </div>
               </div>
 
-              <a
-                href="/blog"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/blog"
                 className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  isDark
-                    ? 'text-slate-200 hover:text-white hover:bg-slate-700'
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  location.pathname === '/blog'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : isDark
+                      ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
                 }`}
                 onClick={() => setIsOpen(false)}
               >
                 <FileText className="w-5 h-5 mr-3" />
                 Blogs
-              </a>
+              </Link>
 
               <button
                 onClick={() => {
