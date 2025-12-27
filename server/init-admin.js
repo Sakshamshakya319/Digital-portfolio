@@ -4,7 +4,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = 'mongodb+srv://saksham94:rvLJKfkxNYLLcgSw@portfolio.auxgecw.mongodb.net/?appName=portfolio';
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error('Missing MONGODB_URI environment variable');
+  process.exit(1);
+}
 
 async function initAdmin() {
   try {

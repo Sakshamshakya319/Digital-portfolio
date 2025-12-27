@@ -25,11 +25,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://saksham94:rvLJKfkxNYLLcgSw@portfolio.auxgecw.mongodb.net/?appName=portfolio';
-
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error('Missing MONGODB_URI environment variable');
+  process.exit(1);
+}
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
 // Middleware
 app.use(helmet({
