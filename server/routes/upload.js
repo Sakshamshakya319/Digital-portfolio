@@ -66,24 +66,52 @@ router.get('/image/:id', async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
-      res.set('Content-Type', 'image/svg+xml');
+      res.set({
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'public, max-age=604800, immutable',
+        'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Access-Control-Allow-Origin': '*',
+        'Timing-Allow-Origin': '*'
+      });
       return res.status(200).send(svg);
     }
 
     const image = await Image.findById(id);
     if (!image || !image.data) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
-      res.set('Content-Type', 'image/svg+xml');
+      res.set({
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'public, max-age=604800, immutable',
+        'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Access-Control-Allow-Origin': '*',
+        'Timing-Allow-Origin': '*'
+      });
       return res.status(200).send(svg);
     }
 
-    res.set('Content-Type', image.contentType || 'application/octet-stream');
+    const contentType = (image.contentType && image.contentType.startsWith('image/'))
+      ? image.contentType
+      : 'image/jpeg';
+    res.set({
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=604800, immutable',
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+      'Access-Control-Allow-Origin': '*',
+      'Timing-Allow-Origin': '*',
+      'Content-Disposition': 'inline'
+    });
     res.send(image.data);
   } catch (error) {
     const w = parseInt(req.query.w, 10) || 400;
     const h = parseInt(req.query.h, 10) || 250;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
-    res.set('Content-Type', 'image/svg+xml');
+    res.set({
+      'Content-Type': 'image/svg+xml',
+      'Cache-Control': 'public, max-age=604800, immutable',
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+      'Access-Control-Allow-Origin': '*',
+      'Timing-Allow-Origin': '*'
+    });
     res.status(200).send(svg);
   }
 });
@@ -92,7 +120,13 @@ router.get('/placeholder/:w/:h', async (req, res) => {
   const w = parseInt(req.params.w, 10) || 400;
   const h = parseInt(req.params.h, 10) || 250;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
-  res.set('Content-Type', 'image/svg+xml');
+  res.set({
+    'Content-Type': 'image/svg+xml',
+    'Cache-Control': 'public, max-age=604800, immutable',
+    'Cross-Origin-Resource-Policy': 'cross-origin',
+    'Access-Control-Allow-Origin': '*',
+    'Timing-Allow-Origin': '*'
+  });
   res.status(200).send(svg);
 });
 
