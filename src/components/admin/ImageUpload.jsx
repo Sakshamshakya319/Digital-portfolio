@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Image as ImageIcon, Loader } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import toast from 'react-hot-toast';
@@ -9,6 +9,18 @@ const ImageUpload = ({ onImageUpload, currentImage, label = "Upload Image" }) =>
   const [preview, setPreview] = useState(currentImage || '');
   const fileInputRef = useRef(null);
   const { isDark } = useTheme();
+  const getImageUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith('/api')) {
+      const base = import.meta.env.VITE_API_URL || '';
+      return `${base}${url.slice(4)}`;
+    }
+    return url;
+  };
+
+  useEffect(() => {
+    setPreview(getImageUrl(currentImage) || '');
+  }, [currentImage]);
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];

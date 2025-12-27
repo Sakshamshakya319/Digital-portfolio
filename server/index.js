@@ -37,7 +37,7 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, 'https://portfolio-app.onrender.com'] // Add your domain to FRONTEND_URL in .env
+    ? [process.env.FRONTEND_URL,  'https://www.sakshamshakya.tech']
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 }));

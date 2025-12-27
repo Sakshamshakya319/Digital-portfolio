@@ -111,6 +111,14 @@ const BlogManager = () => {
 
 const BlogList = ({ blogs, onDelete, onTogglePublish, onEdit, onCreate }) => {
   const { isDark } = useTheme();
+  const getImageUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith('/api')) {
+      const base = import.meta.env.VITE_API_URL || '';
+      return `${base}${url.slice(4)}`;
+    }
+    return url;
+  };
 
   return (
     <div className="space-y-6">
@@ -156,7 +164,7 @@ const BlogList = ({ blogs, onDelete, onTogglePublish, onEdit, onCreate }) => {
               {/* Blog Image */}
               {blog.featuredImage && (
                 <img
-                  src={blog.featuredImage}
+                  src={getImageUrl(blog.featuredImage)}
                   alt={blog.title}
                   className="w-full h-32 object-cover rounded-lg mb-4"
                 />

@@ -1,5 +1,6 @@
 import express from 'express';
 import Blog from '../models/Blog.js';
+import Image from '../models/Image.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -172,6 +173,31 @@ router.delete('/:id', async (req, res) => {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     if (!blog) {
       return res.status(404).json({ message: 'Blog not found' });
+    }
+
+    // Cleanup featured image if stored in our Image collection
+    if (blog.featuredImage && blog.featuredImage.includes('/api/upload/image/')) {
+      const featuredId = blog.featuredImage.split('/').pop();
+      if (featuredId && featuredId.length === 24) {
+        try {
+          await Image.findByIdAndDelete(featuredId);
+        } catch (e) {
+          // swallow cleanup errors
+        }
+      }
+    }
+
+    // Cleanup any embedded images in content that reference our upload endpoint
+    if (blog.content) {
+      const matches = blog.content.match(/\/api\/upload\/image\/([a-f0-9]{24})/g) || [];
+      const ids = matches.map(m => m.split('/').pop()).filter(id => id && id.length === 24);
+      if (ids.length) {
+        try {
+          await Image.deleteMany({ _id: { $in: ids } });
+        } catch (e) {
+          // swallow cleanup errors
+        }
+      }
     }
 
     res.json({ message: 'Blog deleted successfully' });

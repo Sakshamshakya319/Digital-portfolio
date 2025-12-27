@@ -10,6 +10,15 @@ const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getImageUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith('/api')) {
+      const base = import.meta.env.VITE_API_URL || '';
+      return `${base}${url.slice(4)}`;
+    }
+    return url;
+  };
+
   useEffect(() => {
     fetchBlogs();
   }, []);
@@ -108,7 +117,7 @@ const Blog = () => {
                   {/* Blog Image */}
                   <div className="relative overflow-hidden group">
                     <img
-                      src={blog.featuredImage || '/api/placeholder/400/250'}
+                      src={getImageUrl(blog.featuredImage) || getImageUrl('/api/placeholder/400/250')}
                       alt={blog.title}
                       className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                     />

@@ -40,8 +40,11 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
 
     await image.save();
 
-    // Generate URL that points to our serve endpoint
-    const imageUrl = `/api/upload/image/${image._id}`;
+    // Generate absolute URL for the uploaded image
+    const backendBase =
+      process.env.BACKEND_URL ||
+      `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${backendBase}/api/upload/image/${image._id}`;
     
     res.status(200).json({
       message: 'Image uploaded successfully',
