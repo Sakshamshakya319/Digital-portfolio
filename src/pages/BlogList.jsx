@@ -26,16 +26,19 @@ const BlogList = () => {
 
   useEffect(() => {
     fetchBlogs();
+  }, [currentPage, searchTerm, selectedCategory]);
+
+  useEffect(() => {
     updateNotificationStatus();
     
-    // Initialize notification service
+    // Initialize notification service separately
     notificationService.initialize();
     
     // Cleanup on unmount
     return () => {
       notificationService.cleanup();
     };
-  }, [currentPage, searchTerm, selectedCategory]);
+  }, []);
 
   const updateNotificationStatus = () => {
     setNotificationStatus(notificationService.getSubscriptionStatus());

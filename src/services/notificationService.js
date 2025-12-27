@@ -113,8 +113,11 @@ class NotificationService {
       this.checkForNewBlogs();
     }, 300000);
 
-    // Also check immediately
-    this.checkForNewBlogs();
+    // Don't check immediately to avoid interfering with initial page load
+    // Wait 30 seconds before first check
+    setTimeout(() => {
+      this.checkForNewBlogs();
+    }, 30000);
   }
 
   // Stop periodic checking
@@ -135,7 +138,7 @@ class NotificationService {
       
       const response = await blogAPI.getAll({
         page: 1,
-        limit: 10,
+        limit: 5, // Reduced limit for notification checking
         sortBy: 'publishedAt',
         sortOrder: 'desc'
       });
@@ -152,7 +155,8 @@ class NotificationService {
         this.saveSettings();
       }
     } catch (error) {
-      console.error('Error checking for new blogs:', error);
+      console.warn('Error checking for new blogs (notification service):', error);
+      // Don't show error to user for background checks
     }
   }
 
@@ -203,45 +207,26 @@ class NotificationService {
 
   // Show toast notification
   showToastNotification(blog) {
-    toast.custom((t) => (
-      <div
-        className={`${
-          t.visible ? 'animate-enter' : 'animate-leave'
-        } max-w-md w-full bg-white dark:bg-slate-800 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 dark:ring-slate-700`}
-      >
-        <div className="flex-1 w-0 p-4">
-          <div className="flex items-start">
-            <div className="flex-shrink-0 pt-0.5">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">📝</span>
-              </div>
-            </div>
-            <div className="ml-3 flex-1">
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                New Blog Post!
-              </p>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 line-clamp-2">
-                {blog.title}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex border-l border-gray-200 dark:border-slate-600">
-          <button
-            onClick={() => {
-              window.open(`/blog/${blog.slug}`, '_blank');
-              toast.dismiss(t.id);
-            }}
-            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Read
-          </button>
-        </div>
-      </div>
-    ), {
-      duration: 8000,
-      position: 'top-right',
-    });
+    const toastId = toast.success(
+      `📝 New Blog Post: ${blog.title}`,
+      {
+        duration: 8000,
+        position: 'top-right',
+        style: {
+          background: '#1e293b',
+          color: '#ffffff',
+          padding: '16px',
+          borderRadius: '12px',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+          maxWidth: '400px',
+          cursor: 'pointer'
+        },
+        onClick: () => {
+          window.open(`/blog/${blog.slug}`, '_blank');
+          toast.dismiss(toastId);
+        }
+      }
+    );
   }
 
   // Get subscription status
