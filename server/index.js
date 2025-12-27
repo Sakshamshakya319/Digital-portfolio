@@ -21,17 +21,11 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MongoDB connection
-const MONGODB_URI = 'mongodb+srv://saksham94:rvLJKfkxNYLLcgSw@portfolio.auxgecw.mongodb.net/?appName=portfolio';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://saksham94:rvLJKfkxNYLLcgSw@portfolio.auxgecw.mongodb.net/?appName=portfolio';
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -43,7 +37,7 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, 'http://localhost:5173'] // Add your domain to FRONTEND_URL in .env
+    ? [process.env.FRONTEND_URL, 'https://portfolio-app.onrender.com'] // Add your domain to FRONTEND_URL in .env
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 }));
