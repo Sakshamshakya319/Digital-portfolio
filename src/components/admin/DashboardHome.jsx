@@ -11,10 +11,12 @@ import {
   Users,
   MessageSquare
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 import { blogAPI, projectAPI, contactAPI, skillAPI } from '../../services/api';
 
 const DashboardHome = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [stats, setStats] = useState({
     blogs: 0,
     projects: 0,
@@ -116,8 +118,8 @@ const DashboardHome = () => {
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center lg:text-left">
-        <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">Dashboard Overview</h1>
-        <p className="text-slate-400 text-lg">Welcome back! Here's what's happening with your portfolio.</p>
+        <h1 className={`text-3xl lg:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Dashboard Overview</h1>
+        <p className={`text-lg ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Welcome back! Here's what's happening with your portfolio.</p>
       </div>
 
       {/* Stats Grid */}
@@ -132,12 +134,16 @@ const DashboardHome = () => {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02, y: -5 }}
               onClick={() => navigate(card.path)}
-              className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-slate-600 transition-all duration-300 cursor-pointer group"
+              className={`backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 cursor-pointer group ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600' 
+                  : 'bg-white border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
+              }`}
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-slate-400 text-sm font-medium">{card.title}</p>
-                  <p className="text-3xl font-bold text-white mt-2">{card.value}</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{card.title}</p>
+                  <p className={`text-3xl font-bold mt-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{card.value}</p>
                 </div>
                 <div className={`w-14 h-14 bg-gradient-to-r ${card.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className="w-7 h-7 text-white" />
@@ -146,7 +152,7 @@ const DashboardHome = () => {
               <div className="flex items-center text-sm">
                 <TrendingUp className="w-4 h-4 text-green-500 mr-2" />
                 <span className="text-green-500 font-medium">{card.change}</span>
-                <span className="text-slate-400 ml-2">from last month</span>
+                <span className={`ml-2 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>from last month</span>
               </div>
             </motion.div>
           );
@@ -158,22 +164,34 @@ const DashboardHome = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50"
+        className={`backdrop-blur-sm rounded-xl p-8 border ${
+          isDark 
+            ? 'bg-slate-800/50 border-slate-700/50' 
+            : 'bg-white border-gray-200 shadow-sm'
+        }`}
       >
-        <h2 className="text-2xl font-semibold text-white mb-6">Quick Actions</h2>
+        <h2 className={`text-2xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <motion.button 
             onClick={() => handleQuickAction('blog')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-4 p-6 bg-slate-700/50 rounded-xl hover:bg-slate-700 transition-all duration-300 group"
+            className={`flex items-center space-x-4 p-6 rounded-xl transition-all duration-300 group ${
+              isDark 
+                ? 'bg-slate-700/50 hover:bg-slate-700' 
+                : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+            }`}
           >
-            <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
+              isDark 
+                ? 'bg-blue-500/20 group-hover:bg-blue-500/30' 
+                : 'bg-blue-100 group-hover:bg-blue-200'
+            }`}>
               <FileText className="w-6 h-6 text-blue-500" />
             </div>
             <div className="text-left">
-              <h3 className="text-white font-medium">Create New Blog Post</h3>
-              <p className="text-slate-400 text-sm">Write and publish articles</p>
+              <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Create New Blog Post</h3>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Write and publish articles</p>
             </div>
           </motion.button>
           
@@ -181,14 +199,22 @@ const DashboardHome = () => {
             onClick={() => handleQuickAction('project')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-4 p-6 bg-slate-700/50 rounded-xl hover:bg-slate-700 transition-all duration-300 group"
+            className={`flex items-center space-x-4 p-6 rounded-xl transition-all duration-300 group ${
+              isDark 
+                ? 'bg-slate-700/50 hover:bg-slate-700' 
+                : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+            }`}
           >
-            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
+              isDark 
+                ? 'bg-green-500/20 group-hover:bg-green-500/30' 
+                : 'bg-green-100 group-hover:bg-green-200'
+            }`}>
               <FolderOpen className="w-6 h-6 text-green-500" />
             </div>
             <div className="text-left">
-              <h3 className="text-white font-medium">Add New Project</h3>
-              <p className="text-slate-400 text-sm">Showcase your work</p>
+              <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Add New Project</h3>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Showcase your work</p>
             </div>
           </motion.button>
           
@@ -196,14 +222,22 @@ const DashboardHome = () => {
             onClick={() => handleQuickAction('messages')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-4 p-6 bg-slate-700/50 rounded-xl hover:bg-slate-700 transition-all duration-300 group"
+            className={`flex items-center space-x-4 p-6 rounded-xl transition-all duration-300 group ${
+              isDark 
+                ? 'bg-slate-700/50 hover:bg-slate-700' 
+                : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+            }`}
           >
-            <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
+              isDark 
+                ? 'bg-purple-500/20 group-hover:bg-purple-500/30' 
+                : 'bg-purple-100 group-hover:bg-purple-200'
+            }`}>
               <MessageSquare className="w-6 h-6 text-purple-500" />
             </div>
             <div className="text-left">
-              <h3 className="text-white font-medium">View Messages</h3>
-              <p className="text-slate-400 text-sm">Check contact inquiries</p>
+              <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>View Messages</h3>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Check contact inquiries</p>
             </div>
           </motion.button>
         </div>
@@ -214,34 +248,50 @@ const DashboardHome = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50"
+        className={`backdrop-blur-sm rounded-xl p-8 border ${
+          isDark 
+            ? 'bg-slate-800/50 border-slate-700/50' 
+            : 'bg-white border-gray-200 shadow-sm'
+        }`}
       >
-        <h2 className="text-2xl font-semibold text-white mb-6">Recent Activity</h2>
+        <h2 className={`text-2xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Recent Activity</h2>
         <div className="space-y-4">
-          <div className="flex items-start space-x-4 p-4 bg-slate-700/30 rounded-xl hover:bg-slate-700/40 transition-colors">
+          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
+            isDark 
+              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
+              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+          }`}>
             <div className="w-3 h-3 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
             <div className="flex-1">
-              <p className="text-white font-medium">New contact message received</p>
-              <p className="text-slate-400 text-sm mt-1">Someone is interested in your services</p>
-              <p className="text-slate-500 text-xs mt-2">2 hours ago</p>
+              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>New contact message received</p>
+              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Someone is interested in your services</p>
+              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>2 hours ago</p>
             </div>
           </div>
           
-          <div className="flex items-start space-x-4 p-4 bg-slate-700/30 rounded-xl hover:bg-slate-700/40 transition-colors">
+          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
+            isDark 
+              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
+              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+          }`}>
             <div className="w-3 h-3 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
             <div className="flex-1">
-              <p className="text-white font-medium">Blog post published successfully</p>
-              <p className="text-slate-400 text-sm mt-1">Your latest article is now live</p>
-              <p className="text-slate-500 text-xs mt-2">1 day ago</p>
+              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Blog post published successfully</p>
+              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Your latest article is now live</p>
+              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>1 day ago</p>
             </div>
           </div>
           
-          <div className="flex items-start space-x-4 p-4 bg-slate-700/30 rounded-xl hover:bg-slate-700/40 transition-colors">
+          <div className={`flex items-start space-x-4 p-4 rounded-xl transition-colors ${
+            isDark 
+              ? 'bg-slate-700/30 hover:bg-slate-700/40' 
+              : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+          }`}>
             <div className="w-3 h-3 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
             <div className="flex-1">
-              <p className="text-white font-medium">New project added to portfolio</p>
-              <p className="text-slate-400 text-sm mt-1">Portfolio updated with latest work</p>
-              <p className="text-slate-500 text-xs mt-2">3 days ago</p>
+              <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>New project added to portfolio</p>
+              <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Portfolio updated with latest work</p>
+              <p className={`text-xs mt-2 ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>3 days ago</p>
             </div>
           </div>
         </div>

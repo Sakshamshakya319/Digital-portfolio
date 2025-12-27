@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, ExternalLink, Github, Save, X } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 import { projectAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -83,12 +84,14 @@ const ProjectManager = () => {
 };
 
 const ProjectList = ({ projects, onDelete, onEdit, onCreate }) => {
+  const { isDark } = useTheme();
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Projects</h1>
-          <p className="text-slate-400">Manage your portfolio projects</p>
+          <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Projects</h1>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Manage your portfolio projects</p>
         </div>
         <button 
           onClick={onCreate}
@@ -105,7 +108,7 @@ const ProjectList = ({ projects, onDelete, onEdit, onCreate }) => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <p className="text-slate-400 text-lg mb-4">No projects yet</p>
+          <p className={`text-lg mb-4 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>No projects yet</p>
           <button 
             onClick={onCreate}
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300"
@@ -122,7 +125,11 @@ const ProjectList = ({ projects, onDelete, onEdit, onCreate }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-slate-600 transition-all duration-300"
+              className={`backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600' 
+                  : 'bg-white border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
+              }`}
             >
               {/* Project Image */}
               <img
@@ -142,28 +149,32 @@ const ProjectList = ({ projects, onDelete, onEdit, onCreate }) => {
                 }`}>
                   {project.status}
                 </span>
-                <span className="text-slate-400 text-xs">{project.category}</span>
+                <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>{project.category}</span>
               </div>
 
               {/* Title */}
-              <h3 className="text-white font-semibold mb-2 line-clamp-2">
+              <h3 className={`font-semibold mb-2 line-clamp-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {project.title}
               </h3>
 
               {/* Description */}
-              <p className="text-slate-400 text-sm mb-4 line-clamp-3">
+              <p className={`text-sm mb-4 line-clamp-3 ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
                 {project.shortDescription}
               </p>
 
               {/* Technologies */}
               <div className="flex flex-wrap gap-1 mb-4">
                 {project.technologies.slice(0, 3).map((tech, i) => (
-                  <span key={i} className="text-xs px-2 py-1 bg-slate-700 text-slate-300 rounded">
+                  <span key={i} className={`text-xs px-2 py-1 rounded ${
+                    isDark 
+                      ? 'bg-slate-700 text-slate-300' 
+                      : 'bg-gray-100 text-gray-700'
+                  }`}>
                     {tech}
                   </span>
                 ))}
                 {project.technologies.length > 3 && (
-                  <span className="text-xs px-2 py-1 text-slate-400">
+                  <span className={`text-xs px-2 py-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
                     +{project.technologies.length - 3}
                   </span>
                 )}
@@ -186,7 +197,11 @@ const ProjectList = ({ projects, onDelete, onEdit, onCreate }) => {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-slate-600/50 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+                    className={`p-2 rounded-lg transition-colors ${
+                      isDark 
+                        ? 'bg-slate-600/50 text-slate-300 hover:bg-slate-600' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
                   >
                     <Github className="w-4 h-4" />
                   </a>

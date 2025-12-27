@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Calendar, User, MessageSquare, Trash2, Eye } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 import { contactAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 
 const ContactManager = () => {
+  const { isDark } = useTheme();
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -86,8 +88,8 @@ const ContactManager = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Contact Messages</h1>
-          <p className="text-slate-400">Manage incoming messages and inquiries</p>
+          <h1 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Contact Messages</h1>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Manage incoming messages and inquiries</p>
         </div>
       </div>
 
@@ -100,7 +102,9 @@ const ContactManager = () => {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               filter === status
                 ? 'bg-blue-500 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                : isDark 
+                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -116,8 +120,8 @@ const ContactManager = () => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <Mail className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400 text-lg">No messages found</p>
+          <Mail className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-slate-600' : 'text-gray-400'}`} />
+          <p className={`text-lg ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>No messages found</p>
         </motion.div>
       ) : (
         <div className="space-y-4">
@@ -127,7 +131,11 @@ const ContactManager = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-slate-600 transition-all duration-300"
+              className={`backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600' 
+                  : 'bg-white border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
+              }`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -135,23 +143,23 @@ const ContactManager = () => {
                     <User className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">{contact.name}</h3>
-                    <p className="text-slate-400 text-sm">{contact.email}</p>
+                    <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{contact.name}</h3>
+                    <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{contact.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(contact.status)}`}>
                     {contact.status}
                   </span>
-                  <span className="text-slate-500 text-xs">
+                  <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>
                     {new Date(contact.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
 
               <div className="mb-4">
-                <h4 className="text-white font-medium mb-2">{contact.subject}</h4>
-                <p className="text-slate-300 text-sm leading-relaxed">
+                <h4 className={`font-medium mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{contact.subject}</h4>
+                <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {contact.message}
                 </p>
               </div>
@@ -161,7 +169,11 @@ const ContactManager = () => {
                   <select
                     value={contact.status}
                     onChange={(e) => handleStatusUpdate(contact._id, e.target.value)}
-                    className="bg-slate-700 text-white text-sm px-3 py-1 rounded border border-slate-600 focus:outline-none focus:border-blue-500"
+                    className={`text-sm px-3 py-1 rounded border focus:outline-none focus:border-blue-500 ${
+                      isDark 
+                        ? 'bg-slate-700 text-white border-slate-600' 
+                        : 'bg-white text-gray-900 border-gray-300'
+                    }`}
                   >
                     <option value="new">New</option>
                     <option value="read">Read</option>
