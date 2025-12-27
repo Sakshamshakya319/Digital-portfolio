@@ -67,6 +67,11 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.redirect('/api/health');
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
