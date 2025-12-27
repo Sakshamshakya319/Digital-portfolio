@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import mongoose from 'mongoose';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import Image from '../models/Image.js';
 
@@ -59,16 +60,40 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
 // Get image by ID (public)
 router.get('/image/:id', async (req, res) => {
   try {
-    const image = await Image.findById(req.params.id);
-    if (!image) {
-      return res.status(404).json({ message: 'Image not found' });
+    const { id } = req.params;
+    const w = parseInt(req.query.w, 10) || 400;
+    const h = parseInt(req.query.h, 10) || 250;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
+      res.set('Content-Type', 'image/svg+xml');
+      return res.status(200).send(svg);
     }
 
-    res.set('Content-Type', image.contentType);
+    const image = await Image.findById(id);
+    if (!image || !image.data) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
+      res.set('Content-Type', 'image/svg+xml');
+      return res.status(200).send(svg);
+    }
+
+    res.set('Content-Type', image.contentType || 'application/octet-stream');
     res.send(image.data);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching image' });
+    const w = parseInt(req.query.w, 10) || 400;
+    const h = parseInt(req.query.h, 10) || 250;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
+    res.set('Content-Type', 'image/svg+xml');
+    res.status(200).send(svg);
   }
+});
+
+router.get('/placeholder/:w/:h', async (req, res) => {
+  const w = parseInt(req.params.w, 10) || 400;
+  const h = parseInt(req.params.h, 10) || 250;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#e5e7eb"/></svg>`;
+  res.set('Content-Type', 'image/svg+xml');
+  res.status(200).send(svg);
 });
 
 // Delete image by ID
