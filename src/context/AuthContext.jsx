@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
+      try { await api.get('/health'); } catch {}
       const response = await api.post('/auth/login', { username, password });
       const { token, user } = response.data || {};
       if (!token || !user) {
