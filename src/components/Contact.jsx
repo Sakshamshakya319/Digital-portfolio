@@ -50,8 +50,8 @@ const Contact = () => {
     {
       icon: Phone,
       label: 'Phone',
-      value: '+91 9411850565',
-      href: 'tel:+919411850565',
+      value: '+91 9400000000',
+      href: 'tel:+919400000000',
       color: 'from-green-500 to-emerald-500'
     },
     {
@@ -74,12 +74,6 @@ const Contact = () => {
       icon: Linkedin,
       label: 'LinkedIn',
       href: 'https://linkedin.com/in/sakshamshakya',
-      color: 'hover:text-blue-400'
-    },
-    {
-      icon: Instagram,
-      label: 'Instagram',
-      href: 'https://www.instagram.com/sakshamshakya975/',
       color: 'hover:text-blue-400'
     }
   ];

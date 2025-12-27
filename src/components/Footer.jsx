@@ -49,9 +49,8 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-semibold mb-4`}>Get In Touch</h3>
-            <div className="space-y-2">
-              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>saksham.shakya@lpu.in</p>
-              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>+91 9411850565</p>
+            <div className="space-y-2">      
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>+91 9400000000</p>
               <p className={`${isDark ? 'text-gray-400' : 'text-gray-700'}`}>Maheru, Punjab</p>
             </div>
           </div>

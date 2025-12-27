@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, User, FileText, Code, Briefcase, Award, Heart, Mail, Sun, Moon } from 'lucide-react';
+import { Menu, X, Home, User, FileText, Code, Briefcase, Mail, Sun, Moon, ChevronDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Navigation = ({ activeSection }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [aboutOpenDesktop, setAboutOpenDesktop] = useState(false);
+  const [aboutOpenMobile, setAboutOpenMobile] = useState(false);
   const { isDark, toggleTheme } = useTheme();
-
-  const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'about', label: 'About', icon: User },
-    { id: 'resume', label: 'Resume', icon: FileText },
-    { id: 'skills', label: 'Skills', icon: Code },
-    { id: 'projects', label: 'Projects', icon: Briefcase },
-    { id: 'blog', label: 'Blog', icon: FileText },
-    { id: 'contact', label: 'Contact', icon: Mail },
-  ];
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -43,39 +35,92 @@ const Navigation = ({ activeSection }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const classes = `flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                activeSection === item.id
-                  ? isDark
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-blue-600 text-white shadow-md'
+            <button
+              onClick={() => scrollToSection('home')}
+              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeSection === 'home'
+                  ? 'bg-blue-600 text-white shadow-md'
                   : isDark
                     ? 'text-slate-200 hover:text-white hover:bg-slate-700'
                     : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-              }`;
-              return item.id === 'blog' ? (
-                <a
-                  key={item.id}
-                  href="/blog"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={classes}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {item.label}
-                </a>
-              ) : (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={classes}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {item.label}
-                </button>
-              );
-            })}
+              }`}
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Home
+            </button>
+
+            <div
+              className="relative"
+              onMouseEnter={() => setAboutOpenDesktop(true)}
+              onMouseLeave={() => setAboutOpenDesktop(false)}
+            >
+              <button
+                onClick={() => setAboutOpenDesktop((v) => !v)}
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  activeSection === 'about' || activeSection === 'skills' || activeSection === 'projects'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : isDark
+                      ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <User className="w-4 h-4 mr-2" />
+                About Me
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </button>
+              {aboutOpenDesktop && (
+                <div className={`absolute mt-2 rounded-lg shadow-lg border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} min-w-[180px]`}>
+                  <button
+                    onClick={() => scrollToSection('about')}
+                    className={`w-full text-left px-4 py-2 rounded-t-lg ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    About
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('skills')}
+                    className={`w-full text-left px-4 py-2 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    Skills
+                  </button>
+                  <button
+                    onClick={() => scrollToSection('projects')}
+                    className={`w-full text-left px-4 py-2 rounded-b-lg ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    Projects
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <a
+              href="/blog"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeSection === 'blog'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : isDark
+                    ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Blogs
+            </a>
+
+            <button
+              onClick={() => scrollToSection('contact')}
+              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeSection === 'contact'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : isDark
+                    ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Contact Us
+            </button>
             
             {/* Theme Toggle Button */}
             <button
@@ -127,42 +172,87 @@ const Navigation = ({ activeSection }) => {
               : 'bg-gray-50 border-gray-200'
           }`}>
             <div className="flex flex-col space-y-2 pt-4">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const classes = `flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  activeSection === item.id
-                    ? isDark
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-blue-600 text-white shadow-md'
+              <button
+                onClick={() => scrollToSection('home')}
+                className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  activeSection === 'home'
+                    ? 'bg-blue-600 text-white shadow-md'
                     : isDark
                       ? 'text-slate-200 hover:text-white hover:bg-slate-700'
                       : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                }`;
-                return item.id === 'blog' ? (
-                  <a
-                    key={item.id}
-                    href="/blog"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={classes}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <Icon className="w-5 h-5 mr-3" />
-                    {item.label}
-                  </a>
-                ) : (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      scrollToSection(item.id);
-                    }}
-                    className={classes}
-                  >
-                    <Icon className="w-5 h-5 mr-3" />
-                    {item.label}
-                  </button>
-                );
-              })}
+                }`}
+              >
+                <Home className="w-5 h-5 mr-3" />
+                Home
+              </button>
+
+              <div className={`rounded-lg ${isDark ? 'bg-slate-800' : 'bg-white'} border ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+                <button
+                  onClick={() => setAboutOpenMobile((v) => !v)}
+                  className={`w-full flex items-center justify-between px-4 py-3 font-medium transition-all ${
+                    isDark
+                      ? 'text-slate-200 hover:text-white'
+                      : 'text-gray-700 hover:text-gray-900'
+                  }`}
+                >
+                  <span className="flex items-center">
+                    <User className="w-5 h-5 mr-3" />
+                    About Me
+                  </span>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${aboutOpenMobile ? 'rotate-180' : ''}`} />
+                </button>
+                {aboutOpenMobile && (
+                  <div className="flex flex-col">
+                    <button
+                      onClick={() => scrollToSection('about')}
+                      className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                    >
+                      About
+                    </button>
+                    <button
+                      onClick={() => scrollToSection('skills')}
+                      className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                    >
+                      Skills
+                    </button>
+                    <button
+                      onClick={() => scrollToSection('projects')}
+                      className={`text-left px-4 py-3 ${isDark ? 'text-slate-200 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                    >
+                      Projects
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <a
+                href="/blog"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  isDark
+                    ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                <FileText className="w-5 h-5 mr-3" />
+                Blogs
+              </a>
+
+              <button
+                onClick={() => scrollToSection('contact')}
+                className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  activeSection === 'contact'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : isDark
+                      ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Mail className="w-5 h-5 mr-3" />
+                Contact Us
+              </button>
             </div>
           </div>
         )}
