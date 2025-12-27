@@ -133,7 +133,7 @@ const Blog = () => {
 
                   {/* Blog Content */}
                   <div className="p-6">
-                    <div className="flex items-center space-x-4 mb-3 text-sm text-slate-500">
+                    <div className={`flex items-center space-x-4 mb-3 text-sm ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 mr-1" />
                         {new Date(blog.publishedAt).toLocaleDateString()}
@@ -150,9 +150,7 @@ const Blog = () => {
                       {blog.title}
                     </h3>
 
-                    <p className={`text-sm mb-4 line-clamp-3 ${
-                      isDark ? 'text-slate-400' : 'text-slate-600'
-                    }`}>
+                    <p className={`text-sm mb-4 line-clamp-3 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                       {blog.excerpt}
                     </p>
 
@@ -177,7 +175,7 @@ const Blog = () => {
 
                     {/* Stats and Read More */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4 text-sm text-slate-500">
+                      <div className={`flex items-center space-x-4 text-sm ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                         <div className="flex items-center">
                           <Eye className="w-4 h-4 mr-1" />
                           {blog.views}

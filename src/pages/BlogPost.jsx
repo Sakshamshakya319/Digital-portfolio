@@ -200,7 +200,7 @@ const BlogPost = () => {
               </h1>
 
               {/* Meta Information */}
-              <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-slate-500">
+              <div className={`flex flex-wrap items-center gap-6 mb-8 text-sm ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
                   {new Date(blog.publishedAt).toLocaleDateString('en-US', {
@@ -294,7 +294,7 @@ const BlogPost = () => {
 
               {/* Excerpt */}
               <p className={`text-xl leading-relaxed ${
-                isDark ? 'text-slate-300' : 'text-slate-700'
+                isDark ? 'text-slate-200' : 'text-slate-800'
               }`}>
                 {blog.excerpt}
               </p>
@@ -333,8 +333,8 @@ const BlogPost = () => {
             >
               <div className={`prose prose-lg max-w-none ${
                 isDark 
-                  ? 'prose-invert prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-code:text-blue-400 prose-pre:bg-slate-800 prose-blockquote:border-blue-500 prose-blockquote:text-slate-300'
-                  : 'prose-headings:text-slate-900 prose-p:text-slate-700 prose-strong:text-slate-900 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-blockquote:border-blue-500 prose-blockquote:text-slate-600'
+                  ? 'prose-invert prose-headings:text-white prose-p:text-slate-200 prose-strong:text-white prose-code:text-blue-400 prose-pre:bg-slate-800 prose-blockquote:border-blue-500 prose-blockquote:text-slate-300 prose-a:text-blue-400'
+                  : 'prose-headings:text-slate-900 prose-p:text-slate-800 prose-strong:text-slate-900 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-blockquote:border-blue-500 prose-blockquote:text-slate-600 prose-a:text-blue-600'
               }`}>
                 <div dangerouslySetInnerHTML={{ __html: blog.content }} />
               </div>
