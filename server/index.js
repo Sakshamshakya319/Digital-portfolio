@@ -39,7 +39,9 @@ mongoose.connect(MONGODB_URI)
 
 // Middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable CSP for easier development/deployment, or configure it properly
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginEmbedderPolicy: false
 }));
 const allowedOrigins = new Set([
   process.env.FRONTEND_URL,
