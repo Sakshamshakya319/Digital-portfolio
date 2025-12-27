@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
-import { Calendar, Clock, Tag, Search, Filter, Eye, Heart } from 'lucide-react';
+import { Calendar, Clock, Tag, Search, Filter, Eye, Heart, Bell } from 'lucide-react';
 import { blogAPI } from '../services/api';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import NotificationSettings from '../components/NotificationSettings';
+import notificationService from '../services/notificationService';
 
 const BlogList = () => {
   const { isDark } = useTheme();
@@ -15,10 +17,29 @@ const BlogList = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState({
+    isSubscribed: false,
+    hasPermission: false,
+    isSupported: false
+  });
 
   useEffect(() => {
     fetchBlogs();
+    updateNotificationStatus();
+    
+    // Initialize notification service
+    notificationService.initialize();
+    
+    // Cleanup on unmount
+    return () => {
+      notificationService.cleanup();
+    };
   }, [currentPage, searchTerm, selectedCategory]);
+
+  const updateNotificationStatus = () => {
+    setNotificationStatus(notificationService.getSubscriptionStatus());
+  };
 
   const fetchBlogs = async () => {
     setLoading(true);
@@ -93,11 +114,31 @@ const BlogList = () => {
               }`}>
                 My <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">Blog</span>
               </h1>
-              <p className={`text-lg max-w-2xl mx-auto ${
+              <p className={`text-lg max-w-2xl mx-auto mb-8 ${
                 isDark ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Sharing knowledge, experiences, and insights from my development journey
               </p>
+              
+              {/* Notification Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowNotificationSettings(true)}
+                className={`inline-flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  notificationStatus.isSubscribed
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl'
+                }`}
+              >
+                <Bell className={`w-5 h-5 ${notificationStatus.isSubscribed ? 'animate-pulse' : ''}`} />
+                <span>
+                  {notificationStatus.isSubscribed 
+                    ? 'Notifications Active' 
+                    : 'Get Notified of New Posts'
+                  }
+                </span>
+              </motion.button>
             </motion.div>
 
             {/* Search and Filter */}
@@ -294,6 +335,15 @@ const BlogList = () => {
       </main>
 
       <Footer />
+      
+      {/* Notification Settings Modal */}
+      <NotificationSettings 
+        isOpen={showNotificationSettings}
+        onClose={() => {
+          setShowNotificationSettings(false);
+          updateNotificationStatus();
+        }}
+      />
     </div>
   );
 };

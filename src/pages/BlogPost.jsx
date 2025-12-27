@@ -17,6 +17,7 @@ import { blogAPI } from '../services/api';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import toast from 'react-hot-toast';
+import { processContentForDarkMode, normalizeContentImages, getProseClasses } from '../utils/darkModeUtils';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -47,6 +48,19 @@ const BlogPost = () => {
     return html.replace(/src="\/api([^"]*)"/g, (_m, path) => `src="${base}${path}"`);
   };
 
+  // Enhanced content processing for better dark mode support
+  const processContentForBlog = (html) => {
+    if (!html) return html;
+    
+    // First normalize image URLs
+    let processedHtml = normalizeContentImages(html);
+    
+    // Then apply dark mode processing
+    processedHtml = processContentForDarkMode(processedHtml, isDark);
+    
+    return processedHtml;
+  };
+
   const fetchBlog = async () => {
     try {
       const response = await blogAPI.getBySlug(slug);
@@ -55,7 +69,7 @@ const BlogPost = () => {
         data.featuredImage = getImageUrl(data.featuredImage);
       }
       if (data.content) {
-        data.content = normalizeContentImages(data.content);
+        data.content = processContentForBlog(data.content);
       }
       setBlog(data);
       setLikes(response.data.likes || 0);
@@ -331,11 +345,7 @@ const BlogPost = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="max-w-4xl mx-auto"
             >
-              <div className={`prose prose-lg max-w-none ${
-                isDark 
-                  ? 'prose-invert prose-headings:text-white prose-p:text-slate-200 prose-strong:text-white prose-code:text-blue-400 prose-pre:bg-slate-800 prose-blockquote:border-blue-500 prose-blockquote:text-slate-300 prose-a:text-blue-400'
-                  : 'prose-headings:text-slate-900 prose-p:text-slate-800 prose-strong:text-slate-900 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-blockquote:border-blue-500 prose-blockquote:text-slate-600 prose-a:text-blue-600'
-              }`}>
+              <div className={getProseClasses(isDark)}>
                 <div dangerouslySetInnerHTML={{ __html: blog.content }} />
               </div>
             </motion.div>

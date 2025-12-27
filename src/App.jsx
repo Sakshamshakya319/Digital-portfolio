@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
+import notificationService from './services/notificationService';
 
 // Public components
 import Portfolio from './pages/Portfolio';
@@ -15,6 +16,15 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  // Initialize notification service when app starts
+  React.useEffect(() => {
+    notificationService.initialize();
+    
+    return () => {
+      notificationService.cleanup();
+    };
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>
