@@ -33,7 +33,9 @@ mongoose.connect(MONGODB_URI)
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL || 'https://your-domain.com'] 
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 }));
 
