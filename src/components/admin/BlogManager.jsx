@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Eye, Calendar, Clock, Heart, Save, X } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { blogAPI } from '../../services/api';
+import api, { blogAPI } from '../../services/api';
 import { useTheme } from '../../context/ThemeContext';
 import ImageUpload from './ImageUpload';
 import toast from 'react-hot-toast';
@@ -238,6 +238,7 @@ const BlogList = ({ blogs, onDelete, onTogglePublish, onEdit, onCreate }) => {
 };
 
 const BlogEditor = ({ blog, onClose }) => {
+  const quillRef = useRef(null);
   const [formData, setFormData] = useState({
     title: blog?.title || '',
     slug: blog?.slug || '',
@@ -252,19 +253,49 @@ const BlogEditor = ({ blog, onClose }) => {
   const [saving, setSaving] = useState(false);
   const { isDark } = useTheme();
 
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'align': [] }],
-      ['blockquote', 'code-block'],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const toastId = toast.loading('Uploading image...');
+      try {
+        const res = await api.post('/upload', formData);
+        const url = res.data.url;
+        const editor = quillRef.current.getEditor();
+        const range = editor.getSelection();
+        editor.insertEmbed(range.index, 'image', url);
+        toast.success('Image uploaded', { id: toastId });
+      } catch (err) {
+        toast.error('Upload failed', { id: toastId });
+      }
+    };
   };
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'align': [] }],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video'],
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler
+      }
+    },
+  }), []);
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',

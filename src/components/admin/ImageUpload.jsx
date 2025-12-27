@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
 
 const ImageUpload = ({ onImageUpload, currentImage, label = "Upload Image" }) => {
   const [uploading, setUploading] = useState(false);
@@ -35,14 +36,17 @@ const ImageUpload = ({ onImageUpload, currentImage, label = "Upload Image" }) =>
       };
       reader.readAsDataURL(file);
 
-      // For now, we'll use a placeholder upload service
-      // In a real app, you'd upload to your server or cloud storage
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate upload
+      // Upload to server
+      const formData = new FormData();
+      formData.append('image', file);
 
-      // Generate a mock URL (in real app, this would come from your upload service)
-      const mockUrl = `https://picsum.photos/800/600?random=${Date.now()}`;
-      
-      onImageUpload(mockUrl);
+      const response = await api.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      onImageUpload(response.data.url);
       toast.success('Image uploaded successfully!');
     } catch (error) {
       console.error('Upload error:', error);
@@ -53,7 +57,20 @@ const ImageUpload = ({ onImageUpload, currentImage, label = "Upload Image" }) =>
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = async () => {
+    // If there's an image uploaded (URL is present) and it's a server image (contains /api/upload/image/)
+    // we should try to delete it from the server
+    if (currentImage && currentImage.includes('/api/upload/image/')) {
+      const imageId = currentImage.split('/').pop();
+      try {
+        await api.delete(`/upload/image/${imageId}`);
+        toast.success('Image deleted from server');
+      } catch (error) {
+        console.error('Error deleting image:', error);
+        // Even if server delete fails, we remove it from UI
+      }
+    }
+    
     setPreview('');
     onImageUpload('');
     if (fileInputRef.current) {
