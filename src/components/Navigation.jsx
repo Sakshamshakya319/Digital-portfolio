@@ -45,19 +45,31 @@ const Navigation = ({ activeSection }) => {
           <div className="hidden md:flex items-center space-x-2">
             {navItems.map((item) => {
               const Icon = item.icon;
-              return (
+              const classes = `flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeSection === item.id
+                  ? isDark
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-blue-600 text-white shadow-md'
+                  : isDark
+                    ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+              }`;
+              return item.id === 'blog' ? (
+                <a
+                  key={item.id}
+                  href="/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={classes}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {item.label}
+                </a>
+              ) : (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    activeSection === item.id
-                      ? isDark
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-blue-600 text-white shadow-md'
-                      : isDark
-                        ? 'text-slate-200 hover:text-white hover:bg-slate-700'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
+                  className={classes}
                 >
                   <Icon className="w-4 h-4 mr-2" />
                   {item.label}
@@ -117,19 +129,34 @@ const Navigation = ({ activeSection }) => {
             <div className="flex flex-col space-y-2 pt-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                return (
+                const classes = `flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  activeSection === item.id
+                    ? isDark
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-blue-600 text-white shadow-md'
+                    : isDark
+                      ? 'text-slate-200 hover:text-white hover:bg-slate-700'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`;
+                return item.id === 'blog' ? (
+                  <a
+                    key={item.id}
+                    href="/blog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={classes}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Icon className="w-5 h-5 mr-3" />
+                    {item.label}
+                  </a>
+                ) : (
                   <button
                     key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                      activeSection === item.id
-                        ? isDark
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'bg-blue-600 text-white shadow-md'
-                        : isDark
-                          ? 'text-slate-200 hover:text-white hover:bg-slate-700'
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
+                    onClick={() => {
+                      scrollToSection(item.id);
+                    }}
+                    className={classes}
                   >
                     <Icon className="w-5 h-5 mr-3" />
                     {item.label}

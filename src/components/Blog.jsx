@@ -190,6 +190,8 @@ const Blog = () => {
                       
                       <Link
                         to={`/blog/${blog.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center text-blue-500 hover:text-purple-600 font-medium transition-colors duration-300 group"
                       >
                         Read More
@@ -211,6 +213,8 @@ const Blog = () => {
             >
               <Link
                 to="/blog"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
               >
                 View All Posts

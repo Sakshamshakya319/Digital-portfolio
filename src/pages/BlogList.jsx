@@ -208,7 +208,7 @@ const BlogList = () => {
                           </div>
                         </div>
 
-                        <Link to={`/blog/${blog.slug}`}>
+                        <Link to={`/blog/${blog.slug}`} target="_blank" rel="noopener noreferrer">
                           <h3 className={`text-xl font-bold mb-3 line-clamp-2 hover:text-blue-500 transition-colors ${
                             isDark ? 'text-white' : 'text-slate-900'
                           }`}>
