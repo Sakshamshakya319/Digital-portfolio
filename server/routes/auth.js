@@ -54,9 +54,9 @@ router.get('/verify', authenticateToken, (req, res) => {
 // Initialize admin user (run once)
 router.post('/init-admin', async (req, res) => {
   try {
-    const existingAdmin = await User.findOne({ role: 'admin' });
+    const existingAdmin = await User.findOne({ username: 'sakshamshakya94' });
     if (existingAdmin) {
-      return res.status(400).json({ message: 'Admin user already exists' });
+      return res.status(200).json({ message: 'Admin user already exists' });
     }
 
     const adminUser = new User({
@@ -69,7 +69,9 @@ router.post('/init-admin', async (req, res) => {
     
     res.json({ message: 'Admin user created successfully' });
   } catch (error) {
-    console.error('Admin creation error:', error);
+    if (error && error.code === 11000) {
+      return res.status(200).json({ message: 'Admin user already exists' });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
