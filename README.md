@@ -1,257 +1,454 @@
-# Professional Portfolio - Saksham Shakya
++-----------------------------------------------------------------------+
+| **SAKSHAM SHAKYA**                                                    |
+|                                                                       |
+| Aspiring Full-Stack Developer \| MCA @ Lovely Professional University |
+|                                                                       |
+| linkedin.com/in/sakshamshakya India 🇮🇳                                |
++-----------------------------------------------------------------------+
 
-A modern, full-stack portfolio website built with React, Node.js, Express, and MongoDB. Features a complete admin panel for managing content, blog posts, projects, and contact messages.
+  ----------------- ----------------- ----------------- -----------------
+  **⚡ OPEN TO      **🎓 MCA          **📰 PUBLICATION: **🏛️ NSS
+  WORK**            STUDENT**         SOCIO.IO**        PARLIAMENT
+                                                        ACHIEVER**
 
-## 🚀 Features
+  ----------------- ----------------- ----------------- -----------------
 
-### Frontend
-- **Modern Design**: Clean, professional design with dark/light theme support
-- **Smooth Animations**: Framer Motion animations throughout the site
-- **Responsive**: Fully responsive design that works on all devices
-- **Blog System**: Dynamic blog with categories, tags, and search functionality
-- **Project Showcase**: Interactive project gallery with filtering
-- **Contact Form**: Integrated contact form with real-time validation
+**1. Project Vision**
 
-### Backend & Admin Panel
-- **Complete Admin Dashboard**: Manage all content from a single interface
-- **Blog Management**: Create, edit, publish/unpublish blog posts
-- **Project Management**: Add and manage portfolio projects
-- **Contact Management**: View and respond to contact messages
-- **Education Management**: Manage educational background
-- **Skills Management**: Add and organize technical skills
-- **User Authentication**: Secure admin authentication with JWT
+This futuristic developer portfolio was built to tell **Saksham
+Shakya\'s story** --- from a school in Mainpuri, UP to publishing a
+real-world browser extension (Socio.io), earning recognition as an NSS
+Achiever who visited Parliament, and now pursuing an MCA at Lovely
+Professional University. The site is designed as a **cinematic,
+scroll-driven experience** that feels like stepping inside a futuristic
+Indian tech hub.
 
-### Technical Features
-- **MongoDB Integration**: All data stored in MongoDB Atlas
-- **RESTful API**: Clean API architecture with proper error handling
-- **Modern Stack**: React 18, Node.js, Express, MongoDB
-- **Type Safety**: TypeScript support for better development experience
-- **Security**: Helmet, CORS, rate limiting, and input validation
+  -----------------------------------------------------------------------
+  Design Philosophy: \"Not just a portfolio --- a story of discipline,
+  curiosity, and code. Rooted in India. Built for the world.\"
 
-## 🛠️ Tech Stack
+  -----------------------------------------------------------------------
 
-### Frontend
-- React 18
-- Vite
-- Framer Motion (animations)
-- React Router DOM
-- Axios (API calls)
-- React Hook Form
-- React Hot Toast
-- Tailwind CSS
-- Lucide React (icons)
+**2. Technology Stack**
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT Authentication
-- bcryptjs (password hashing)
-- Helmet (security)
-- CORS
-- Express Rate Limit
+**Core Framework**
 
-## 📦 Installation & Setup
+  ----------------- ----------------- ----------------- -----------------
+  **Vanilla HTML5** **CSS3 Custom     **JavaScript      **Canvas API**
+                    Properties**      ES2024**          
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- MongoDB Atlas account (or local MongoDB)
+  ----------------- ----------------- ----------------- -----------------
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd professional-portfolio
-```
+**Animation & 3D Libraries**
 
-### 2. Install Dependencies
-```bash
-npm install
-```
++-----------------+-----------------+-----------------+-----------------+
+| **Anime.js      | **Canvas API    | **CSS           | **Custom Cursor |
+| v3.2.2**        | 2D**            | Animations**    | Engine**        |
+|                 |                 |                 |                 |
+| scroll-driven   | particle        | scan lines,     | 3-layer cursor  |
+| entry           | networks,       | border glow,    | with different  |
+| animations,     | Ashoka Chakra,  | orbit rings,    | lag multipliers |
+| stagger         | hex grid,       | pulse, ticker   | for depth       |
+| effects,        | mandala rings   | scroll          | illusion        |
+| counters        |                 |                 |                 |
++-----------------+-----------------+-----------------+-----------------+
 
-### 3. Environment Setup
-Create a `.env` file in the root directory:
-```env
-NODE_ENV=development
-PORT=5000
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-MONGODB_URI=mongodb+srv://saksham94:rvLJKfkxNYLLcgSw@portfolio.auxgecw.mongodb.net/?appName=portfolio
-```
+**Fonts & Design System**
 
-Create a `.env.local` file for the frontend:
-```env
-VITE_API_URL=http://localhost:5000/api
-```
+  --------------------- -------------------------------------------------
+  **Display / Heading** Orbitron (Google Fonts) --- futuristic geometric,
+                        used for names & section titles
 
-### 4. Initialize Admin User
-```bash
-npm run init-admin
-```
+  **Body / UI**         Exo 2 --- clean sci-fi body font, highly readable
+                        at all sizes
 
-This will create an admin user with the following credentials:
-- **Username**: sakshamshakya94
-- **Password**: nrt*gam1apt0AZX-gdx
+  **Monospace / Code**  Share Tech Mono --- terminal-style for tags,
+                        labels, and code snippets
 
-### 5. Start the Development Server
-```bash
-npm run dev
-```
+  **Primary Accent**    #00E5FF --- Electric Cyan (cursor, headings,
+                        borders, glow)
 
-This will start both the backend server (port 5000) and frontend development server (port 5173).
+  **Secondary Accent**  #FF9500 --- Amber / Saffron (role text,
+                        certifications, India palette)
 
-## 🎯 Usage
+  **Success / Status**  #00FF88 --- Neon Green (online status,
+                        availability badge)
 
-### Accessing the Portfolio
-- **Main Portfolio**: http://localhost:5173
-- **Blog**: http://localhost:5173/blog
-- **Admin Panel**: http://localhost:5173/admin/login
+  **Dark Background**   #04080F → #070D1A → #0B1425 (layered depth)
 
-### Admin Panel Features
+  **Light Background**  #EEF4FC → #E0EAF8 → #D2E0F4 (clean, airy light
+                        mode)
+  --------------------- -------------------------------------------------
 
-#### Dashboard
-- Overview of all content statistics
-- Quick actions for common tasks
-- Recent activity feed
+**Deployment**
 
-#### Blog Management
-- Create new blog posts with rich text editor
-- Manage categories and tags
-- Publish/unpublish posts
-- View post analytics
+  ----------------- ----------------- ----------------- -----------------
+  **Vercel          **Netlify**       **GitHub Pages**  **Any Static
+  (Recommended)**                                       Host**
 
-#### Project Management
-- Add new projects with images and descriptions
-- Organize by categories
-- Set project status (Completed, In Progress, Planned)
-- Add live demo and GitHub links
+  ----------------- ----------------- ----------------- -----------------
 
-#### Contact Management
-- View all contact form submissions
-- Update message status (New, Read, Replied, Archived)
-- Quick reply via email integration
+**3. All Pages & Features**
 
-#### Education Management
-- Add educational background
-- Include achievements and descriptions
-- Set date ranges and current status
+  ---------------- ----------------- ------------------------------------------
+                                     
 
-#### Skills Management
-- Add technical skills with proficiency levels
-- Organize by categories
-- Set visibility and display order
+  **🏠 Home**      /                 3-layer cursor, particle network canvas,
+                                     mandala rings, hero entrance anime.js
+                                     timeline, live photo, skills ticker,
+                                     featured projects, blog preview
 
-## 🔧 API Endpoints
+  **👤 About**     /about            Photo with scan-line FX, corner HUD
+                                     overlays, sticky info table (email,
+                                     university, publication, status), skill
+                                     chips, animated stats
 
-### Authentication
-- `POST /api/auth/login` - Admin login
-- `GET /api/auth/verify` - Verify JWT token
-- `POST /api/auth/init-admin` - Initialize admin user
+  **🎓 Education** /education        Diamond-gem timeline for MCA/BCA/School,
+                                     active/dim timeline dots, certifications
+                                     stack with hover glow, education badges
 
-### Blog
-- `GET /api/blogs` - Get published blogs (public)
-- `GET /api/blogs/:slug` - Get single blog by slug (public)
-- `GET /api/blogs/admin/all` - Get all blogs (admin)
-- `POST /api/blogs` - Create blog (admin)
-- `PUT /api/blogs/:id` - Update blog (admin)
-- `DELETE /api/blogs/:id` - Delete blog (admin)
+  **💼 Projects**  /projects         Filter bar (All/Full
+                                     Stack/Frontend/Backend/Extension),
+                                     hexagon-clipped cards, anime.js filter
+                                     transitions, Socio.io as star project
 
-### Projects
-- `GET /api/projects` - Get all projects (public)
-- `GET /api/projects/:id` - Get single project (public)
-- `POST /api/projects` - Create project (admin)
-- `PUT /api/projects/:id` - Update project (admin)
-- `DELETE /api/projects/:id` - Delete project (admin)
+  **🏆             /achievements     Animated counter stats (anime.js),
+  Achievements**                     Parliament visit card, NSS achievement,
+                                     publication, LinkedIn top skills
+                                     recognition, dual-degree milestone
 
-### Contact
-- `POST /api/contact` - Submit contact form (public)
-- `GET /api/contact` - Get all contacts (admin)
-- `PUT /api/contact/:id` - Update contact status (admin)
-- `DELETE /api/contact/:id` - Delete contact (admin)
+  **✍️ Blog**      /blogs            Table layout with numbered rows, live
+                                     search input, category filter, date
+                                     column, hover-arrow animation, 7 posts
+                                     pre-populated
 
-### Education
-- `GET /api/education` - Get all education (public)
-- `POST /api/education` - Create education (admin)
-- `PUT /api/education/:id` - Update education (admin)
-- `DELETE /api/education/:id` - Delete education (admin)
+  **📬 Contact**   /contact          Real email/LinkedIn/portfolio links,
+                                     availability badge, social links row,
+                                     validated form, anime.js toast
+                                     notification on submit
+  ---------------- ----------------- ------------------------------------------
 
-### Skills
-- `GET /api/skills` - Get visible skills (public)
-- `GET /api/skills/admin/all` - Get all skills (admin)
-- `POST /api/skills` - Create skill (admin)
-- `PUT /api/skills/:id` - Update skill (admin)
-- `DELETE /api/skills/:id` - Delete skill (admin)
+**4. Custom Cursor System**
 
-## 🚀 Deployment
+The portfolio uses a **3-layer cursor** built entirely in JavaScript
+with different lag multipliers for a parallax depth effect:
 
-### Frontend (Netlify/Vercel)
-1. Build the project: `npm run build`
-2. Deploy the `dist` folder to your hosting platform
-3. Set environment variables in your hosting platform
+  --------------------- -------------------------------------------------
+  **Layer 1 --- Dot**   Instant response (lag 1.0) --- 6px solid cyan
+                        dot, sharp glow box-shadow, snaps exactly to
+                        mouse
 
-### Backend (Railway/Heroku)
-1. Set up environment variables
-2. Deploy the server code
-3. Ensure MongoDB connection is working
+  **Layer 2 --- Ring**  Smooth lag (0.14) --- 34px translucent cyan
+                        circle follows with gentle easing, expands on
+                        hover
 
-## 🔒 Security Features
+  **Layer 3 ---         Slowest lag (0.08) --- SVG crosshair with
+  Crosshair**           concentric rings, creates depth of field illusion
 
-- JWT-based authentication
-- Password hashing with bcryptjs
-- Rate limiting on API endpoints
-- CORS configuration
-- Input validation and sanitization
-- Helmet for security headers
+  **Mouse Trail**       2 canvas particles per move event --- cyan/amber
+                        sparks with opacity fade using RAF loop
 
-## 📱 Responsive Design
+  **Hover Expansion**   body.cursor-expand class --- dot & ring scale up
+                        on all interactive elements for tactile feedback
+  --------------------- -------------------------------------------------
 
-The portfolio is fully responsive and optimized for:
-- Desktop (1920px+)
-- Laptop (1024px - 1919px)
-- Tablet (768px - 1023px)
-- Mobile (320px - 767px)
+**Cursor Code Pattern**
 
-## 🎨 Customization
+let mx=0, my=0, ox=0, oy=0, bx=0, by=0;
 
-### Themes
-The portfolio supports both dark and light themes. Users can toggle between themes using the theme switcher in the navigation.
+document.addEventListener(\'mousemove\', e =\> { mx=e.clientX;
+my=e.clientY; dot.style.left=mx+\'px\'; \... });
 
-### Colors
-Primary colors can be customized in the Tailwind CSS configuration:
-- Blue: #3B82F6
-- Purple: #8B5CF6
-- Green: #10B981
+function animCursor() {
 
-### Content
-All content is managed through the admin panel, making it easy to update:
-- Personal information
-- Skills and proficiency levels
-- Projects and descriptions
-- Blog posts and articles
-- Contact information
+ox += (mx-ox) \* 0.14; // ring lag
 
-## 🤝 Contributing
+bx += (mx-bx) \* 0.08; // crosshair slower lag
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit your changes: `git commit -am 'Add new feature'`
-4. Push to the branch: `git push origin feature/new-feature`
-5. Submit a pull request
+outer.style.left = ox+\'px\'; blade.style.left = bx+\'px\';
 
-## 📄 License
+requestAnimationFrame(animCursor);
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+}
 
-## 👨‍💻 Author
+**5. Anime.js Animations**
 
-**Saksham Shakya**
-- GitHub: [@sakshamshakya319](https://github.com/sakshamshakya319)
-- LinkedIn: [sakshamshakya](https://linkedin.com/in/sakshamshakya)
-- Email: saksham.shakya@lpu.in
+**Hero Entrance Timeline**
 
-## 🙏 Acknowledgments
+On page load and every time Home is revisited, a staggered anime.js
+timeline fires:
 
-- React team for the amazing framework
-- Framer Motion for smooth animations
-- Tailwind CSS for utility-first styling
-- MongoDB for the database solution
-- All the open-source contributors who made this project possible
+-   First name fades up (700ms, easeOutExpo)
+
+-   Last name follows 400ms later with cyan glow
+
+-   Role text slides in from left (500ms)
+
+-   Status badge scales from 0.8→1 (400ms)
+
+-   CTA buttons fade up together (500ms)
+
+-   Stats grid items stagger with 80ms delay each (500ms)
+
+-   Photo frame scales from 0.95→1 simultaneously (600ms)
+
+-   Stats count up from 0→target using innerHTML interpolation
+
+**Project Filter Transitions**
+
+When a filter button is clicked, all non-matching cards animate:
+
+-   opacity 1→0.15 + scale 1→0.96 in 300ms easeOutQuad
+
+-   Matching cards remain at full opacity and scale
+
+-   pointer-events toggled to prevent interaction with dimmed cards
+
+**Recurring / Loop Animations**
+
+-   Logo hex glow: box-shadow pulses between none and full cyan glow (2s
+    loop)
+
+-   Nav pill shimmer: border-color cycles every 3 seconds
+
+-   Scan-line flicker: opacity 0.5→0.9→0.5 on photo every 2.5s
+
+-   Counter animation: anime innerHTML tween with round:1 for
+    whole-number counting
+
+-   Toast notification: translateY spring-in then fade-out after 4
+    seconds
+
+**6. Background Canvas System**
+
+A full-viewport Canvas 2D animation runs continuously behind all pages:
+
+  ------------------- ---------------------------------------------------
+  **Particle          110 particles moving with slow random velocity,
+  Network**           connected by lines when \< 120px apart with opacity
+                      proportional to distance
+
+  **Mandala Rings**   4 concentric rings of dots (8/12/18/24 dots)
+                      rotating at different speeds and directions in the
+                      top-right corner
+
+  **Hex Grid**        Honeycomb pattern of hexagons (5×5 grid) rendered
+                      in the bottom-left with 5% opacity cyan stroke
+
+  **Radial Mesh       2 radial gradients (cyan top-right, amber
+  Gradient**          bottom-left) layered for atmospheric depth
+
+  **Blueprint Grid**  Faint 90px grid lines across full canvas at 3%
+                      opacity for technical/blueprint aesthetic
+
+  **Theme Aware**     Canvas opacity is 50% in dark mode, 30% in light
+                      mode to maintain readability
+  ------------------- ---------------------------------------------------
+
+**7. Personal Data (from LinkedIn Profile)**
+
+**Contact & Identity**
+
+  --------------------- -------------------------------------------------
+  **Full Name**         Saksham Shakya
+
+  **Email**             sakshamshakya94@gmail.com
+
+  **Portfolio**         sakshamshakya.tech
+
+  **LinkedIn**          linkedin.com/in/sakshamshakya
+
+  **Location**          India 🇮🇳
+
+  **Tagline**           Aspiring Full-Stack Developer \| Dedicated
+                        Student Building Real-World Skills \| Visited
+                        Parliament As NSS Achiever
+
+  **Publication**       Socio.io --- A Web Based Extension
+  --------------------- -------------------------------------------------
+
+**Education Timeline**
+
+  --------------------- -------------------------------------------------
+  **MCA (Current)**     Master of Computer Applications --- LPU, Punjab
+                        (August 2025 -- August 2027)
+
+  **B.Sc. CS**          Bachelor\'s Degree, Computer Science --- LPU,
+                        Punjab (August 2022 -- June 2025)
+
+  **High School**       High School Diploma --- Dr. Kiran Saujiya Senior
+                        Secondary School, Mainpuri
+  --------------------- -------------------------------------------------
+
+**Top Skills (LinkedIn)**
+
+  ----------------------- ----------------------- -----------------------
+  **Next.js**             **Google API**          **Vercel**
+
+  ----------------------- ----------------------- -----------------------
+
+**8. Folder Structure**
+
+  -----------------------------------------------------------------------
+  Note: The current version is a single self-contained HTML file
+  (saksham_portfolio.html) with all CSS, JS, and base64 photo embedded.
+  The structure below represents the recommended React/Vite migration
+  path.
+
+  -----------------------------------------------------------------------
+
+saksham-portfolio/
+
+├── index.html ← Single-file version (current)
+
+├── public/
+
+│ ├── saksham.jpg ← Profile photo
+
+│ └── favicon.ico
+
+├── src/
+
+│ ├── pages/
+
+│ │ ├── Home.jsx
+
+│ │ ├── About.jsx
+
+│ │ ├── Education.jsx
+
+│ │ ├── Projects.jsx
+
+│ │ ├── Achievements.jsx
+
+│ │ ├── Blogs.jsx
+
+│ │ └── Contact.jsx
+
+│ ├── components/
+
+│ │ ├── Cursor.jsx ← 3-layer cursor system
+
+│ │ ├── BgCanvas.jsx ← Particle network + mandala
+
+│ │ ├── Navbar.jsx ← Pill nav with active states
+
+│ │ └── TrailCanvas.jsx ← Mouse spark trail
+
+│ ├── styles/
+
+│ │ └── theme.css ← CSS custom properties (dark/light)
+
+│ └── main.jsx
+
+├── tailwind.config.js
+
+├── vite.config.js
+
+└── README.md
+
+**9. Getting Started**
+
+**Option A --- Single HTML File (Current)**
+
+Open **saksham_portfolio.html** directly in any modern browser. No build
+step required.
+
+-   Works offline --- all assets embedded
+
+-   Photo base64-encoded inside the file
+
+-   CDN loaded: Anime.js + Google Fonts (needs internet for fonts)
+
+**Option B --- React + Vite Migration**
+
+-   npm create vite@latest saksham-portfolio \-- \--template react
+
+-   npm install animejs tailwindcss \@types/animejs
+
+-   npm install -D \@vitejs/plugin-react
+
+-   npm run dev \# Start at localhost:5173
+
+**10. Deployment Guide**
+
+**Vercel (Recommended --- matches sakshamshakya.tech)**
+
+-   Push to GitHub repository
+
+-   Connect repo at vercel.com --- it auto-detects static HTML
+
+-   Custom domain: Add sakshamshakya.tech in Vercel dashboard → DNS
+
+-   Zero config for single HTML file deployment
+
+**Netlify**
+
+-   Drag & drop saksham_portfolio.html to netlify.com/drop
+
+-   Or connect GitHub for auto-deploy on every git push
+
+**11. Light / Dark Theme System**
+
+Theme switching uses a single attribute toggle with CSS custom
+properties for instant, smooth transitions:
+
+\<html data-theme=\"dark\"\> \<!\-- or data-theme=\"light\" \--\>
+
+:root { /\* DARK mode defaults \*/
+
+\--bg: #04080F; \--c: #00E5FF; \--tx: #D6EEFF;
+
+}
+
+\[data-theme=\"light\"\] { /\* LIGHT mode overrides \*/
+
+\--bg: #EEF4FC; \--c: #0077BB; \--tx: #081828;
+
+}
+
+The moon/sun toggle button flips data-theme and triggers an anime.js
+opacity pulse for a smooth feel.
+
+**12. Future Roadmap**
+
+**Phase 1 --- Content**
+
+-   Add real project screenshots and live demo links
+
+-   Write and publish actual blog posts (Next.js, Google API, NSS
+    journey)
+
+-   Add downloadable PDF resume button
+
+**Phase 2 --- Tech Upgrade**
+
+-   Migrate to React 19 + Vite 6 + TypeScript
+
+-   Integrate Framer Motion for page transitions
+
+-   Add Three.js / React Three Fiber for true 3D globe
+
+-   Backend: EmailJS or Supabase for contact form
+
+**Phase 3 --- Features**
+
+-   PWA support with service worker offline caching
+
+-   Hindi / English language toggle (i18n)
+
+-   AI chatbot: \"Ask Saksham\" powered by Claude API
+
+-   GitHub contribution graph live embed
+
+-   LeetCode stats widget
+
+**13. Performance Notes**
+
++-----------------------------------------------------------------------+
+| **Made with ⚡ in India 🇮🇳**                                          |
+|                                                                       |
+| Saksham Shakya \| sakshamshakya.tech \| MCA @ LPU, Punjab             |
+|                                                                       |
+| *\"Vasudhaiva Kutumbakam\" --- The World is One Family*               |
++-----------------------------------------------------------------------+
