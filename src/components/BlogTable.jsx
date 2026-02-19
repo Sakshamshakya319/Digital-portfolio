@@ -57,22 +57,10 @@ export default function BlogTable() {
     }
   }, [blogs]);
 
-  async function openBlog(b) {
+  function openBlog(b) {
     setDetailError('');
-    setDetailLoading(true);
-    try {
-      const res = await fetch(`/api/blogs?id=${encodeURIComponent(b._id)}`);
-      if (!res.ok) {
-        throw new Error('Failed to load blog');
-      }
-      const data = await res.json();
-      const blog = data && data.blog ? data.blog : b;
-      setActiveBlog(blog);
-    } catch (e) {
-      setDetailError('Unable to open this article right now.');
-    } finally {
-      setDetailLoading(false);
-    }
+    setDetailLoading(false);
+    setActiveBlog(b);
   }
 
   function closeBlog() {

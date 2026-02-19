@@ -140,7 +140,8 @@ module.exports = async function handler(req, res) {
               ? b.keywords.join(', ')
               : '',
             imageUrl: b.imageUrl || '',
-            likes: b.likes || 0
+            likes: b.likes || 0,
+            body: b.body || ''
           }))
         })
       );
