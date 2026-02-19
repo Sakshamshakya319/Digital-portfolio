@@ -292,12 +292,19 @@ export default function BlogTable() {
                 </div>
               )}
               <div className="blog-reader-body">
-                {(activeBlog.body || activeBlog.meta || '')
-                  .split(/\n{2,}/)
-                  .filter(Boolean)
-                  .map((p, idx) => (
-                    <p key={String(idx)}>{p}</p>
-                  ))}
+                {activeBlog.body && activeBlog.body.indexOf('<') !== -1 ? (
+                  <div
+                    className="blog-reader-html"
+                    dangerouslySetInnerHTML={{ __html: activeBlog.body }}
+                  />
+                ) : (
+                  (activeBlog.body || activeBlog.meta || '')
+                    .split(/\n{2,}/)
+                    .filter(Boolean)
+                    .map((p, idx) => (
+                      <p key={String(idx)}>{p}</p>
+                    ))
+                )}
               </div>
               <div className="blog-reader-actions">
                 <button
