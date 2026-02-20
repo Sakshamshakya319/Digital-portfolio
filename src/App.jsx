@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import anime from 'animejs';
 import BlogTable from './components/BlogTable.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
@@ -359,6 +359,7 @@ function initPortfolioEffects() {
   const path = window.location.pathname.replace(/\/+$/, '');
   let initialPage = 'home';
   let initialBlogSlug = '';
+  let initialProjectSlug = '';
   if (path === '/admin') {
     initialPage = 'admin';
   } else if (path === '/blogs' || path === '/blog') {
@@ -366,9 +367,17 @@ function initPortfolioEffects() {
   } else if (path.startsWith('/blog/')) {
     initialPage = 'blogs';
     initialBlogSlug = path.slice('/blog/'.length);
+  } else if (path === '/projects' || path === '/project') {
+    initialPage = 'projects';
+  } else if (path.startsWith('/project/')) {
+    initialPage = 'projects';
+    initialProjectSlug = path.slice('/project/'.length);
   }
   if (initialBlogSlug) {
     window.__initialBlogSlug = initialBlogSlug;
+  }
+  if (initialProjectSlug) {
+    window.__initialProjectSlug = initialProjectSlug;
   }
   goPage(initialPage);
 
@@ -612,9 +621,63 @@ function initPortfolioEffects() {
 }
 
 export default function App() {
+  const [projects, setProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [projectsError, setProjectsError] = useState('');
+  const [activeProject, setActiveProject] = useState(null);
+
   useEffect(() => {
     initPortfolioEffects();
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch('/api/projects');
+        if (!res.ok) {
+          throw new Error('Failed to load projects');
+        }
+        const data = await res.json();
+        if (!cancelled) {
+          setProjects(Array.isArray(data.projects) ? data.projects : []);
+          setProjectsError('');
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setProjectsError('Unable to load projects right now.');
+        }
+      } finally {
+        if (!cancelled) {
+          setProjectsLoading(false);
+        }
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!projects.length || typeof window === 'undefined') {
+      return;
+    }
+    const slug = window.__initialProjectSlug;
+    if (!slug) {
+      return;
+    }
+    const match = projects.find(p => p.slug === slug);
+    if (match) {
+      setActiveProject(match);
+    }
+    window.__initialProjectSlug = '';
+  }, [projects]);
+
+  const featuredProjects = useMemo(
+    () => projects.slice(0, 3),
+    [projects]
+  );
 
   return (
     <>
@@ -953,51 +1016,37 @@ export default function App() {
             </a>
           </div>
           <div className="proj-trio">
-            <div className="trio-card">
-              <div className="t-num">01 / FULL STACK</div>
-              <h3 className="t-title">Socio.io Extension</h3>
-              <p className="t-desc">
-                Published web-based browser extension enhancing social
-                interactions. Features real-time data processing and seamless
-                integration with Google APIs.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">Next.js</span>
-                <span className="t-tag">Google API</span>
-                <span className="t-tag">Vercel</span>
+            {projectsLoading && featuredProjects.length === 0 && (
+              <div className="admin-info">Loading featured projects…</div>
+            )}
+            {!projectsLoading &&
+              featuredProjects.map((p, index) => (
+                <div key={p._id || p.slug || index} className="trio-card">
+                  <div className="t-num">
+                    {String(index + 1).padStart(2, '0')} /{' '}
+                    {(p.type || 'Project').toUpperCase()}
+                  </div>
+                  <h3 className="t-title">{p.title}</h3>
+                  <p className="t-desc">{p.summary}</p>
+                  <div className="t-tags">
+                    {(Array.isArray(p.tags) ? p.tags : String(p.tags || '')
+                      .split(',')
+                      .map(t => t.trim())
+                      .filter(Boolean)
+                    ).slice(0, 3).map(tag => (
+                      <span key={tag} className="t-tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="t-arrow">↗</div>
+                </div>
+              ))}
+            {!projectsLoading && !projectsError && featuredProjects.length === 0 && (
+              <div className="admin-info">
+                Add projects from the admin panel to feature them here.
               </div>
-              <div className="t-arrow">↗</div>
-            </div>
-            <div className="trio-card">
-              <div className="t-num">02 / FRONTEND</div>
-              <h3 className="t-title">Dev Portfolio v2</h3>
-              <p className="t-desc">
-                Futuristic personal portfolio with 3D animations, particle
-                systems, light/dark theme, and scroll-driven storytelling built
-                with vanilla JS.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">HTML/CSS/JS</span>
-                <span className="t-tag">Anime.js</span>
-                <span className="t-tag">Canvas API</span>
-              </div>
-              <div className="t-arrow">↗</div>
-            </div>
-            <div className="trio-card">
-              <div className="t-num">03 / BACKEND</div>
-              <h3 className="t-title">Campus Connect API</h3>
-              <p className="t-desc">
-                RESTful API system for LPU campus resources — timetable, CGPA
-                calculator, notice board. Built with Node.js and deployed on
-                Vercel.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">Node.js</span>
-                <span className="t-tag">Express</span>
-                <span className="t-tag">MongoDB</span>
-              </div>
-              <div className="t-arrow">↗</div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -1413,151 +1462,82 @@ export default function App() {
             </button>
           </div>
           <div className="pg" id="projGrid">
-            <div className="pc" data-type="extension">
-              <div className="pc-n">01 / PUBLICATION</div>
-              <div className="pc-ic">🌐</div>
-              <div className="pc-tp">Web Extension</div>
-              <div className="pc-t">Socio.io — Browser Extension</div>
-              <p className="pc-d">
-                Published web-based extension enhancing social interactions.
-                Features Google API integration, real-time data processing, and
-                seamless browser compatibility.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">Next.js</span>
-                <span className="ptag">Google API</span>
-                <span className="ptag">Vercel</span>
-                <span className="ptag">Browser API</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ↗ Published
-                </a>
-                <a className="plk" href="#">
-                  ⌥ Details
-                </a>
-              </div>
-            </div>
-            <div className="pc" data-type="fullstack">
-              <div className="pc-n">02 / FULL STACK</div>
-              <div className="pc-ic">🔗</div>
-              <div className="pc-tp">Full Stack · MERN</div>
-              <div className="pc-t">Campus Connect Platform</div>
-              <p className="pc-d">
-                Platform for LPU students with timetable management, CGPA
-                calculator, assignment tracker and notice board. 300+ active
-                users.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">React</span>
-                <span className="ptag">Node.js</span>
-                <span className="ptag">MongoDB</span>
-                <span className="ptag">Express</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ↗ Live Demo
-                </a>
-                <a className="plk" href="#">
-                  ⌥ GitHub
-                </a>
-              </div>
-            </div>
-            <div className="pc" data-type="frontend">
-              <div className="pc-n">03 / FRONTEND</div>
-              <div className="pc-ic">✦</div>
-              <div className="pc-tp">Frontend · 3D</div>
-              <div className="pc-t">Futuristic Portfolio v2</div>
-              <p className="pc-d">
-                This very portfolio — built with Canvas API, Anime.js, custom
-                cursor system, particle networks, and India-themed 3D visual
-                language.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">HTML/CSS</span>
-                <span className="ptag">Anime.js</span>
-                <span className="ptag">Canvas API</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ↗ Live
-                </a>
-                <a className="plk" href="#">
-                  ⌥ GitHub
-                </a>
-              </div>
-            </div>
-            <div className="pc" data-type="backend">
-              <div className="pc-n">04 / BACKEND</div>
-              <div className="pc-ic">⚙️</div>
-              <div className="pc-tp">REST API</div>
-              <div className="pc-t">Smart Auth API</div>
-              <p className="pc-d">
-                Secure authentication microservice with JWT, refresh tokens,
-                role-based access control, and rate limiting. Deployed
-                serverless on Vercel.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">Node.js</span>
-                <span className="ptag">Express</span>
-                <span className="ptag">JWT</span>
-                <span className="ptag">Vercel</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ⌥ GitHub
-                </a>
-              </div>
-            </div>
-            <div className="pc" data-type="fullstack">
-              <div className="pc-n">05 / FULL STACK</div>
-              <div className="pc-ic">📝</div>
-              <div className="pc-tp">Full Stack · Blog</div>
-              <div className="pc-t">DevBlog — CMS Platform</div>
-              <p className="pc-d">
-                Full-stack blogging platform with Markdown editor, custom
-                categories, comments, and SEO-optimized pages. Built with
-                Next.js App Router.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">Next.js</span>
-                <span className="ptag">MongoDB</span>
-                <span className="ptag">Tailwind</span>
-                <span className="ptag">Vercel</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ↗ Live
-                </a>
-                <a className="plk" href="#">
-                  ⌥ GitHub
-                </a>
-              </div>
-            </div>
-            <div className="pc" data-type="frontend">
-              <div className="pc-n">06 / FRONTEND</div>
-              <div className="pc-ic">🇮🇳</div>
-              <div className="pc-tp">Frontend · React</div>
-              <div className="pc-t">Bharat UI Component Library</div>
-              <p className="pc-d">
-                Open-source React component library inspired by Indian design
-                motifs — Mandala patterns, saffron palette, and
-                Devanagari-compatible typography.
-              </p>
-              <div className="pc-tags">
-                <span className="ptag">React</span>
-                <span className="ptag">TypeScript</span>
-                <span className="ptag">Storybook</span>
-              </div>
-              <div className="pc-lks">
-                <a className="plk" href="#">
-                  ⌥ GitHub
-                </a>
-                <a className="plk" href="#">
-                  📦 npm
-                </a>
-              </div>
-            </div>
+            {projectsLoading && (
+              <div className="admin-info">Loading projects…</div>
+            )}
+            {projectsError && !projectsLoading && (
+              <div className="admin-info">{projectsError}</div>
+            )}
+            {!projectsLoading &&
+              !projectsError &&
+              projects.map((p, index) => (
+                <div
+                  key={p._id || p.slug || index}
+                  className="pc"
+                  data-type={p.category || 'all'}
+                >
+                  <div className="pc-n">
+                    {String(index + 1).padStart(2, '0')} /{' '}
+                    {(p.type || 'Project').toUpperCase()}
+                  </div>
+                  <div className="pc-ic">🌐</div>
+                  <div className="pc-tp">{p.type || 'Project'}</div>
+                  <div className="pc-t">{p.title}</div>
+                  <p className="pc-d">{p.summary}</p>
+                  <div className="pc-tags">
+                    {(Array.isArray(p.tags) ? p.tags : String(p.tags || '')
+                      .split(',')
+                      .map(t => t.trim())
+                      .filter(Boolean)
+                    ).map(tag => (
+                      <span key={tag} className="ptag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="pc-lks">
+                    {p.liveUrl && (
+                      <a
+                        className="plk"
+                        href={p.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        ↗ Live
+                      </a>
+                    )}
+                    {p.githubUrl && (
+                      <a
+                        className="plk"
+                        href={p.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        ⌥ GitHub
+                      </a>
+                    )}
+                    <a
+                      className="plk"
+                      href={
+                        p.slug ? `/project/${p.slug}` : '#'
+                      }
+                      onClick={e => {
+                        e.preventDefault();
+                        setActiveProject(p);
+                      }}
+                    >
+                      ⌥ Details
+                    </a>
+                  </div>
+                </div>
+              ))}
+            {!projectsLoading &&
+              !projectsError &&
+              projects.length === 0 && (
+                <div className="admin-info">
+                  No projects yet. Add some from the admin panel.
+                </div>
+              )}
           </div>
         </section>
         <footer>
@@ -1571,6 +1551,65 @@ export default function App() {
           </div>
         </footer>
       </div>
+
+      {activeProject && (
+        <div className="blog-reader">
+          <div className="blog-reader-head">
+            <div className="blog-reader-eyebrow">
+              {(activeProject.type || 'Project')} · {activeProject.date || ''}
+            </div>
+            <h3 className="blog-reader-title">{activeProject.title}</h3>
+            <div className="blog-reader-meta">
+              <span>{activeProject.status || ''}</span>
+            </div>
+          </div>
+          {activeProject.imageUrl && (
+            <div className="blog-reader-image">
+              <img
+                src={activeProject.imageUrl}
+                alt={activeProject.title}
+              />
+            </div>
+          )}
+          <div className="blog-reader-body">
+            {(activeProject.body || activeProject.summary || '')
+              .split(/\n{2,}/)
+              .filter(Boolean)
+              .map((p, idx) => (
+                <p key={String(idx)}>{p}</p>
+              ))}
+          </div>
+          <div className="blog-reader-actions">
+            {activeProject.liveUrl && (
+              <a
+                className="blog-btn"
+                href={activeProject.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                ↗ Live
+              </a>
+            )}
+            {activeProject.githubUrl && (
+              <a
+                className="blog-btn"
+                href={activeProject.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                ⌥ GitHub
+              </a>
+            )}
+            <button
+              type="button"
+              className="blog-btn ghost"
+              onClick={() => setActiveProject(null)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="page" id="page-achievements">
         <section className="sec ct">

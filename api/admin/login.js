@@ -80,13 +80,22 @@ module.exports = async function handler(req, res) {
       { expiresIn: '2h' }
     );
 
-    const cookie = [
+    const isSecure =
+      process.env.NODE_ENV === 'production' ||
+      process.env.VERCEL_ENV === 'production';
+
+    const parts = [
       `admin_token=${token}`,
       'HttpOnly',
       'Path=/',
-      'SameSite=Lax',
-      'Secure'
-    ].join('; ');
+      'SameSite=Lax'
+    ];
+
+    if (isSecure) {
+      parts.push('Secure');
+    }
+
+    const cookie = parts.join('; ');
 
     res.statusCode = 200;
     res.setHeader('Set-Cookie', cookie);

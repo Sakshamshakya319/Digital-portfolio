@@ -49,6 +49,8 @@ export default function AdminPanel() {
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(false);
 
   function loadBlogs() {
     setBlogsLoading(true);
@@ -76,6 +78,19 @@ export default function AdminPanel() {
       .finally(() => setContactsLoading(false));
   }
 
+  function loadProjects() {
+    setProjectsLoading(true);
+    fetch('/api/projects')
+      .then(r => r.json())
+      .then(data => {
+        setProjects(Array.isArray(data.projects) ? data.projects : []);
+      })
+      .catch(() => {
+        setProjects([]);
+      })
+      .finally(() => setProjectsLoading(false));
+  }
+
   useEffect(() => {
     if (isLoggedIn) {
       if (tab === 'blogs') {
@@ -83,6 +98,9 @@ export default function AdminPanel() {
       }
       if (tab === 'contacts') {
         loadContacts();
+      }
+      if (tab === 'projects') {
+        loadProjects();
       }
     }
   }, [isLoggedIn, tab]);
@@ -223,6 +241,70 @@ export default function AdminPanel() {
     }
   }
 
+  const [projectTitle, setProjectTitle] = useState('');
+  const [projectSummary, setProjectSummary] = useState('');
+  const [projectType, setProjectType] = useState('Full Stack');
+  const [projectCategory, setProjectCategory] = useState('fullstack');
+  const [projectStatus, setProjectStatus] = useState('Completed');
+  const [projectDate, setProjectDate] = useState('');
+  const [projectTags, setProjectTags] = useState('');
+  const [projectImageUrl, setProjectImageUrl] = useState('');
+  const [projectLiveUrl, setProjectLiveUrl] = useState('');
+  const [projectGithubUrl, setProjectGithubUrl] = useState('');
+  const [projectBody, setProjectBody] = useState('');
+  const [projectMessage, setProjectMessage] = useState('');
+
+  async function handleCreateProject(e) {
+    e.preventDefault();
+    setBusy(true);
+    setProjectMessage('');
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: projectTitle,
+          summary: projectSummary,
+          type: projectType,
+          category: projectCategory,
+          status: projectStatus,
+          date: projectDate,
+          tags: projectTags,
+          imageUrl: projectImageUrl,
+          liveUrl: projectLiveUrl,
+          githubUrl: projectGithubUrl,
+          body: projectBody
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setProjectMessage(data.error || 'Failed to create project');
+        return;
+      }
+      setProjectMessage('Project saved successfully.');
+      setProjectTitle('');
+      setProjectSummary('');
+      setProjectType('Full Stack');
+      setProjectCategory('fullstack');
+      setProjectStatus('Completed');
+      setProjectDate('');
+      setProjectTags('');
+      setProjectImageUrl('');
+      setProjectLiveUrl('');
+      setProjectGithubUrl('');
+      setProjectBody('');
+      if (tab === 'projects') {
+        loadProjects();
+      }
+    } catch (err) {
+      setProjectMessage('Network error while creating project');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!isLoggedIn) {
     return (
       <div className="admin-wrap">
@@ -294,13 +376,13 @@ export default function AdminPanel() {
   return (
     <div className="admin-wrap">
       <div className="admin-card">
-        <div className="admin-head">
-          <div className="admin-tag on">Admin Panel</div>
-          <h2 className="admin-title">Dashboard</h2>
-          <p className="admin-sub">
-            Publish blogs, view all posts, and review contact messages
-            submitted from your portfolio.
-          </p>
+          <div className="admin-head">
+            <div className="admin-tag on">Admin Panel</div>
+            <h2 className="admin-title">Dashboard</h2>
+            <p className="admin-sub">
+              Publish blogs, manage projects, and review contact messages
+              submitted from your portfolio.
+            </p>
           <div className="admin-tabs">
             <button
               type="button"
@@ -317,6 +399,24 @@ export default function AdminPanel() {
               onClick={() => setTab('blogs')}
             >
               📚 All Blogs
+            </button>
+            <button
+              type="button"
+              className={`ad-tab${
+                tab === 'createProject' ? ' on' : ''
+              }`}
+              onClick={() => setTab('createProject')}
+            >
+              📁 New Project
+            </button>
+            <button
+              type="button"
+              className={`ad-tab${
+                tab === 'projects' ? ' on' : ''
+              }`}
+              onClick={() => setTab('projects')}
+            >
+              🗂 All Projects
             </button>
             <button
               type="button"
@@ -529,6 +629,174 @@ export default function AdminPanel() {
           </form>
         )}
 
+        {tab === 'createProject' && (
+          <form className="admin-form" onSubmit={handleCreateProject}>
+            <div className="fg">
+              <label className="fl" htmlFor="projectTitle">
+                Project Title
+              </label>
+              <input
+                id="projectTitle"
+                className="fi"
+                type="text"
+                placeholder="Project title"
+                value={projectTitle}
+                onChange={e => setProjectTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div className="fg">
+              <label className="fl" htmlFor="projectSummary">
+                Short Description
+              </label>
+              <textarea
+                id="projectSummary"
+                className="fta"
+                placeholder="One or two lines that describe this project…"
+                value={projectSummary}
+                onChange={e => setProjectSummary(e.target.value)}
+                required
+              />
+            </div>
+            <div className="fg">
+              <label className="fl" htmlFor="projectImageUrl">
+                Project Image URL (from imgbb)
+              </label>
+              <input
+                id="projectImageUrl"
+                className="fi"
+                type="url"
+                placeholder="https://i.ibb.co/your-image-link"
+                value={projectImageUrl}
+                onChange={e => setProjectImageUrl(e.target.value)}
+              />
+            </div>
+            <div className="fr">
+              <div className="fg">
+                <label className="fl" htmlFor="projectCategory">
+                  Category
+                </label>
+                <select
+                  id="projectCategory"
+                  className="fi"
+                  value={projectCategory}
+                  onChange={e => setProjectCategory(e.target.value)}
+                >
+                  <option value="fullstack">Full Stack</option>
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="extension">Extension</option>
+                </select>
+              </div>
+              <div className="fg">
+                <label className="fl" htmlFor="projectType">
+                  Type Label
+                </label>
+                <input
+                  id="projectType"
+                  className="fi"
+                  type="text"
+                  placeholder="Full Stack · MERN"
+                  value={projectType}
+                  onChange={e => setProjectType(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="fr">
+              <div className="fg">
+                <label className="fl" htmlFor="projectStatus">
+                  Status
+                </label>
+                <input
+                  id="projectStatus"
+                  className="fi"
+                  type="text"
+                  placeholder="Completed, In Progress…"
+                  value={projectStatus}
+                  onChange={e => setProjectStatus(e.target.value)}
+                />
+              </div>
+              <div className="fg">
+                <label className="fl" htmlFor="projectDate">
+                  Date
+                </label>
+                <input
+                  id="projectDate"
+                  className="fi"
+                  type="date"
+                  value={projectDate}
+                  onChange={e => setProjectDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="fg">
+              <label className="fl" htmlFor="projectTags">
+                Tags (comma separated)
+              </label>
+              <input
+                id="projectTags"
+                className="fi"
+                type="text"
+                placeholder="React, Node.js, MongoDB…"
+                value={projectTags}
+                onChange={e => setProjectTags(e.target.value)}
+              />
+            </div>
+            <div className="fr">
+              <div className="fg">
+                <label className="fl" htmlFor="projectLiveUrl">
+                  Live URL
+                </label>
+                <input
+                  id="projectLiveUrl"
+                  className="fi"
+                  type="url"
+                  placeholder="https://"
+                  value={projectLiveUrl}
+                  onChange={e => setProjectLiveUrl(e.target.value)}
+                />
+              </div>
+              <div className="fg">
+                <label className="fl" htmlFor="projectGithubUrl">
+                  GitHub URL
+                </label>
+                <input
+                  id="projectGithubUrl"
+                  className="fi"
+                  type="url"
+                  placeholder="https://github.com/…"
+                  value={projectGithubUrl}
+                  onChange={e => setProjectGithubUrl(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="fg">
+              <label className="fl" htmlFor="projectBody">
+                Detailed Description
+              </label>
+              <textarea
+                id="projectBody"
+                className="fta"
+                placeholder="Write more details about this project…"
+                value={projectBody}
+                onChange={e => setProjectBody(e.target.value)}
+              />
+            </div>
+            {projectMessage && (
+              <div className="admin-info">{projectMessage}</div>
+            )}
+            <div className="admin-actions">
+              <button
+                type="submit"
+                className="fsub"
+                disabled={busy}
+              >
+                {busy ? 'Saving…' : 'Save Project'}
+              </button>
+            </div>
+          </form>
+        )}
+
         {tab === 'blogs' && (
           <div className="admin-table">
             {blogsLoading ? (
@@ -598,6 +866,41 @@ export default function AdminPanel() {
                       <td>{c.email}</td>
                       <td>{c.subject || '—'}</td>
                       <td>{c.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
+        {tab === 'projects' && (
+          <div className="admin-table">
+            {projectsLoading ? (
+              <div className="admin-info">Loading projects…</div>
+            ) : projects.length === 0 ? (
+              <div className="admin-info">
+                No projects found. Use “New Project” to add one.
+              </div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projects.map((p, i) => (
+                    <tr key={p._id || i}>
+                      <td>{String(i + 1).padStart(2, '0')}</td>
+                      <td>{p.title}</td>
+                      <td>{p.category}</td>
+                      <td>{p.type}</td>
+                      <td>{p.status}</td>
                     </tr>
                   ))}
                 </tbody>
