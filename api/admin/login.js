@@ -77,16 +77,19 @@ module.exports = async function handler(req, res) {
     const token = sign(
       { sub: adminEmail, role: 'admin' },
       jwtSecret,
-      { expiresIn: '2h' }
+      { expiresIn: '5d' }
     );
 
     const isSecure =
       process.env.NODE_ENV === 'production' ||
       process.env.VERCEL_ENV === 'production';
 
+    const maxAgeSeconds = 5 * 24 * 60 * 60;
+
     const parts = [
       `admin_token=${token}`,
       'HttpOnly',
+      `Max-Age=${maxAgeSeconds}`,
       'Path=/',
       'SameSite=Lax'
     ];

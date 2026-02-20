@@ -49,6 +49,7 @@ export default function AdminPanel() {
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
+  const [contactsError, setContactsError] = useState('');
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
 
@@ -67,13 +68,41 @@ export default function AdminPanel() {
 
   function loadContacts() {
     setContactsLoading(true);
-    fetch('/api/admin/contacts')
-      .then(r => r.json())
-      .then(data => {
+    setContactsError('');
+    fetch('/api/admin/contacts', {
+      credentials: 'include'
+    })
+      .then(async r => {
+        let data;
+        try {
+          data = await r.json();
+        } catch (e) {
+          data = {};
+        }
+        if (!r.ok) {
+          if (r.status === 401) {
+            setIsLoggedIn(false);
+            setLoginError('Admin session expired. Please sign in again.');
+            try {
+              if (typeof window !== 'undefined') {
+                window.localStorage.removeItem('adminLoggedIn');
+              }
+            } catch (e) {}
+          }
+          setContacts([]);
+          setContactsError(
+            data && data.error
+              ? data.error
+              : 'Failed to fetch contact messages.'
+          );
+          return;
+        }
+        setIsLoggedIn(true);
         setContacts(Array.isArray(data.contacts) ? data.contacts : []);
       })
       .catch(() => {
         setContacts([]);
+        setContactsError('Network error while fetching contact messages.');
       })
       .finally(() => setContactsLoading(false));
   }
@@ -90,6 +119,18 @@ export default function AdminPanel() {
       })
       .finally(() => setProjectsLoading(false));
   }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    try {
+      const stored = window.localStorage.getItem('adminLoggedIn');
+      if (stored === '1') {
+        loadContacts();
+      }
+    } catch (e) {}
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -125,6 +166,7 @@ export default function AdminPanel() {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ email, password })
       });
       let data;
@@ -138,6 +180,11 @@ export default function AdminPanel() {
       if (status === 401) {
         setLoginError('Invalid admin credentials');
         setIsLoggedIn(false);
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem('adminLoggedIn');
+          }
+        } catch (e) {}
         return;
       }
       if (status >= 500 || status === 404) {
@@ -146,6 +193,11 @@ export default function AdminPanel() {
             'Admin server is not reachable. Make sure API routes are running (e.g. on Vercel).'
         );
         setIsLoggedIn(false);
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem('adminLoggedIn');
+          }
+        } catch (e) {}
         return;
       }
       if (!res.ok || !data || !data.ok) {
@@ -155,15 +207,30 @@ export default function AdminPanel() {
             : 'Invalid admin credentials'
         );
         setIsLoggedIn(false);
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem('adminLoggedIn');
+          }
+        } catch (e) {}
         return;
       }
       setIsLoggedIn(true);
       setLoginError('');
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('adminLoggedIn', '1');
+        }
+      } catch (e) {}
     } catch (err) {
       setLoginError(
         'Unable to reach admin server. Please check API deployment.'
       );
       setIsLoggedIn(false);
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage.removeItem('adminLoggedIn');
+        }
+      } catch (e) {}
     } finally {
       setBusy(false);
     }
@@ -835,6 +902,19 @@ export default function AdminPanel() {
 
         {tab === 'contacts' && (
           <div className="admin-table">
+            <div className="admin-actions">
+              <button
+                type="button"
+                className="btn-g"
+                onClick={loadContacts}
+                disabled={contactsLoading}
+              >
+                {contactsLoading ? 'Refreshing…' : 'Refresh'}
+              </button>
+            </div>
+            {contactsError && !contactsLoading && (
+              <div className="admin-error">{contactsError}</div>
+            )}
             {contactsLoading ? (
               <div className="admin-info">Loading messages…</div>
             ) : contacts.length === 0 ? (
