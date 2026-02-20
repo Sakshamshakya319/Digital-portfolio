@@ -1152,7 +1152,7 @@ export default function App() {
                   <div className="i-lbl">Email</div>
                   <div className="i-val">
                     <a href="mailto:sakshamshakya94@gmail.com">
-                      sakshamshakya94@gmail.com
+                      sakshamshakya@gmail.com
                     </a>
                   </div>
                 </div>
@@ -1779,7 +1779,7 @@ export default function App() {
                     <div className="ci-lbl">Email</div>
                     <div className="ci-val">
                       <a href="mailto:sakshamshakya94@gmail.com">
-                        sakshamshakya94@gmail.com
+                        sakshamshakya@gmail.com
                       </a>
                     </div>
                   </div>
