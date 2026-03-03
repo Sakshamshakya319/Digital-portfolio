@@ -57,6 +57,9 @@ function createSlug(title) {
 }
 
 module.exports = async function handler(req, res) {
+  // Set timeout headers for Vercel
+  res.setHeader('Cache-Control', 'no-cache');
+  
   if (req.method === 'GET') {
     try {
       const db = getAdminDatabase();
@@ -67,7 +70,14 @@ module.exports = async function handler(req, res) {
       const slug = url.searchParams.get('slug');
 
       if (id || slug) {
-        const snapshot = await projectsRef.once('value');
+        // Get single project with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Database timeout')), 8000)
+        );
+        
+        const dataPromise = projectsRef.once('value');
+        const snapshot = await Promise.race([dataPromise, timeoutPromise]);
+        
         const allProjects = snapshot.val() || {};
         
         let doc = null;
@@ -115,8 +125,14 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      // Get all projects
-      const snapshot = await projectsRef.once('value');
+      // Get all projects with timeout
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout')), 8000)
+      );
+      
+      const dataPromise = projectsRef.once('value');
+      const snapshot = await Promise.race([dataPromise, timeoutPromise]);
+      
       const projectsData = snapshot.val() || {};
       
       const projects = Object.entries(projectsData).map(([id, project]) => ({
@@ -150,7 +166,10 @@ module.exports = async function handler(req, res) {
       console.error('Error fetching projects:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ error: 'Failed to fetch projects' }));
+      res.end(JSON.stringify({ 
+        error: 'Failed to fetch projects',
+        message: e.message 
+      }));
     }
     return;
   }

@@ -57,6 +57,9 @@ function createSlug(title) {
 }
 
 module.exports = async function handler(req, res) {
+  // Set timeout headers for Vercel
+  res.setHeader('Cache-Control', 'no-cache');
+  
   if (req.method === 'GET') {
     try {
       const db = getAdminDatabase();
@@ -67,7 +70,14 @@ module.exports = async function handler(req, res) {
       const slug = url.searchParams.get('slug');
 
       if (id || slug) {
-        const snapshot = await blogsRef.once('value');
+        // Get single blog with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Database timeout')), 8000)
+        );
+        
+        const dataPromise = blogsRef.once('value');
+        const snapshot = await Promise.race([dataPromise, timeoutPromise]);
+        
         const allBlogs = snapshot.val() || {};
         
         let doc = null;
@@ -115,8 +125,14 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      // Get all blogs
-      const snapshot = await blogsRef.once('value');
+      // Get all blogs with timeout
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout')), 8000)
+      );
+      
+      const dataPromise = blogsRef.once('value');
+      const snapshot = await Promise.race([dataPromise, timeoutPromise]);
+      
       const blogsData = snapshot.val() || {};
       
       const blogs = Object.entries(blogsData).map(([id, blog]) => ({
@@ -150,7 +166,10 @@ module.exports = async function handler(req, res) {
       console.error('Error fetching blogs:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ error: 'Failed to fetch blogs' }));
+      res.end(JSON.stringify({ 
+        error: 'Failed to fetch blogs',
+        message: e.message 
+      }));
     }
     return;
   }

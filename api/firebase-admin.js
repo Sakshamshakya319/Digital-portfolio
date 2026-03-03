@@ -14,48 +14,66 @@ function getAdminApp() {
   }
 
   try {
-    // Try to use service account from environment variable
+    const databaseURL = "https://sakshamshakya-14df5-default-rtdb.firebaseio.com";
+
+    // Try to use service account from environment variable (Vercel)
     if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-      app = admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: "https://sakshamshakya-14df5-default-rtdb.firebaseio.com"
-      });
-      console.log('Firebase Admin initialized with service account');
-      return app;
+      try {
+        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        app = admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+          databaseURL
+        });
+        return app;
+      } catch (parseError) {
+        console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT:', parseError.message);
+      }
     }
 
     // Try to load from file (for local development)
-    try {
-      const serviceAccount = require('../sakshamshakya-14df5-firebase-adminsdk.json');
-      app = admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: "https://sakshamshakya-14df5-default-rtdb.firebaseio.com"
-      });
-      console.log('Firebase Admin initialized from local file');
-      return app;
-    } catch (fileError) {
-      // File doesn't exist, use database URL only (limited functionality)
-      console.warn('No service account found, using database URL only');
-      app = admin.initializeApp({
-        databaseURL: "https://sakshamshakya-14df5-default-rtdb.firebaseio.com"
-      });
-      return app;
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const serviceAccount = require('../sakshamshakya-14df5-firebase-adminsdk.json');
+        app = admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+          databaseURL
+        });
+        return app;
+      } catch (fileError) {
+        console.error('Failed to load service account from file:', fileError.message);
+      }
     }
+
+    // Fallback: Initialize without credentials (will fail for write operations)
+    console.warn('No service account found, initializing with database URL only');
+    app = admin.initializeApp({
+      databaseURL
+    });
+    return app;
   } catch (error) {
     console.error('Error initializing Firebase Admin:', error);
-    throw error;
+    throw new Error('Failed to initialize Firebase Admin SDK');
   }
 }
 
 function getAdminDatabase() {
-  const app = getAdminApp();
-  return admin.database(app);
+  try {
+    const app = getAdminApp();
+    return admin.database(app);
+  } catch (error) {
+    console.error('Error getting database:', error);
+    throw error;
+  }
 }
 
 function getAdminAuth() {
-  const app = getAdminApp();
-  return admin.auth(app);
+  try {
+    const app = getAdminApp();
+    return admin.auth(app);
+  } catch (error) {
+    console.error('Error getting auth:', error);
+    throw error;
+  }
 }
 
 module.exports = {
