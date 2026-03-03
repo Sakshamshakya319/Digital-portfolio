@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import anime from 'animejs';
 import BlogTable from './components/BlogTable.jsx';
 import ProjectTable from './components/ProjectTable.jsx';
@@ -626,11 +626,6 @@ export default function App() {
     initPortfolioEffects();
   }, []);
 
-  const featuredProjects = useMemo(
-    () => [],
-    []
-  );
-
   return (
     <>
       <div id="cur-dot" />
@@ -968,37 +963,48 @@ export default function App() {
             </a>
           </div>
           <div className="proj-trio">
-            {projectsLoading && featuredProjects.length === 0 && (
-              <div className="admin-info">Loading featured projects…</div>
-            )}
-            {!projectsLoading &&
-              featuredProjects.map((p, index) => (
-                <div key={p._id || p.slug || index} className="trio-card">
-                  <div className="t-num">
-                    {String(index + 1).padStart(2, '0')} /{' '}
-                    {(p.type || 'Project').toUpperCase()}
-                  </div>
-                  <h3 className="t-title">{p.title}</h3>
-                  <p className="t-desc">{p.summary}</p>
-                  <div className="t-tags">
-                    {(Array.isArray(p.tags) ? p.tags : String(p.tags || '')
-                      .split(',')
-                      .map(t => t.trim())
-                      .filter(Boolean)
-                    ).slice(0, 3).map(tag => (
-                      <span key={tag} className="t-tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="t-arrow">↗</div>
-                </div>
-              ))}
-            {!projectsLoading && !projectsError && featuredProjects.length === 0 && (
-              <div className="admin-info">
-                Add projects from the admin panel to feature them here.
+            <div className="trio-card">
+              <div className="t-num">01 / FOCUS</div>
+              <h3 className="t-title">Student With Production Mindset</h3>
+              <p className="t-desc">
+                From MCA coursework to real-world projects, I focus on writing
+                clean, maintainable code that scales.
+              </p>
+              <div className="t-tags">
+                <span className="t-tag">Clean Code</span>
+                <span className="t-tag">Design Systems</span>
+                <span className="t-tag">Team Work</span>
               </div>
-            )}
+              <div className="t-arrow">↗</div>
+            </div>
+            <div className="trio-card">
+              <div className="t-num">02 / VALUES</div>
+              <h3 className="t-title">Discipline, Patience, Consistency</h3>
+              <p className="t-desc">
+                I bring a reliable, calm energy to every collaboration. I stay
+                with problems until they are solved.
+              </p>
+              <div className="t-tags">
+                <span className="t-tag">Ownership</span>
+                <span className="t-tag">Communication</span>
+                <span className="t-tag">Reliability</span>
+              </div>
+              <div className="t-arrow">↗</div>
+            </div>
+            <div className="trio-card">
+              <div className="t-num">03 / GOAL</div>
+              <h3 className="t-title">Full-Stack Developer Role</h3>
+              <p className="t-desc">
+                I aim to join a team where I can build impactful products using
+                React, Next.js, Node.js and Firebase.
+              </p>
+              <div className="t-tags">
+                <span className="t-tag">Internships</span>
+                <span className="t-tag">Junior Roles</span>
+                <span className="t-tag">Mentorship</span>
+              </div>
+              <div className="t-arrow">↗</div>
+            </div>
           </div>
         </section>
 
