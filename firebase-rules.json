@@ -2,7 +2,7 @@
   "rules": {
     "blogs": {
       ".read": true,
-      ".write": false,
+      ".write": "auth != null",
       "$blogId": {
         "likes": {
           ".write": true
@@ -11,10 +11,10 @@
     },
     "projects": {
       ".read": true,
-      ".write": false
+      ".write": "auth != null"
     },
     "contacts": {
-      ".read": false,
+      ".read": "auth != null",
       ".write": true
     }
   }

@@ -1553,60 +1553,71 @@ export default function App() {
       </div>
 
       {activeProject && (
-        <div className="blog-reader">
-          <div className="blog-reader-head">
-            <div className="blog-reader-eyebrow">
-              {(activeProject.type || 'Project')} · {activeProject.date || ''}
-            </div>
-            <h3 className="blog-reader-title">{activeProject.title}</h3>
-            <div className="blog-reader-meta">
-              <span>{activeProject.status || ''}</span>
-            </div>
-          </div>
-          {activeProject.imageUrl && (
-            <div className="blog-reader-image">
-              <img
-                src={activeProject.imageUrl}
-                alt={activeProject.title}
-              />
-            </div>
-          )}
-          <div className="blog-reader-body">
-            {(activeProject.body || activeProject.summary || '')
-              .split(/\n{2,}/)
-              .filter(Boolean)
-              .map((p, idx) => (
-                <p key={String(idx)}>{p}</p>
-              ))}
-          </div>
-          <div className="blog-reader-actions">
-            {activeProject.liveUrl && (
-              <a
-                className="blog-btn"
-                href={activeProject.liveUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                ↗ Live
-              </a>
-            )}
-            {activeProject.githubUrl && (
-              <a
-                className="blog-btn"
-                href={activeProject.githubUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                ⌥ GitHub
-              </a>
-            )}
-            <button
-              type="button"
-              className="blog-btn ghost"
+        <div className="modal-overlay" onClick={() => setActiveProject(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button 
+              className="modal-close" 
               onClick={() => setActiveProject(null)}
+              aria-label="Close"
             >
-              Close
+              ✕
             </button>
+            <div className="blog-reader">
+              <div className="blog-reader-head">
+                <div className="blog-reader-eyebrow">
+                  {(activeProject.type || 'Project')} · {activeProject.date || ''}
+                </div>
+                <h3 className="blog-reader-title">{activeProject.title}</h3>
+                <div className="blog-reader-meta">
+                  <span>{activeProject.status || ''}</span>
+                </div>
+              </div>
+              {activeProject.imageUrl && (
+                <div className="blog-reader-image">
+                  <img
+                    src={activeProject.imageUrl}
+                    alt={activeProject.title}
+                  />
+                </div>
+              )}
+              <div className="blog-reader-body">
+                {(activeProject.body || activeProject.summary || '')
+                  .split(/\n{2,}/)
+                  .filter(Boolean)
+                  .map((p, idx) => (
+                    <p key={String(idx)}>{p}</p>
+                  ))}
+              </div>
+              <div className="blog-reader-actions">
+                {activeProject.liveUrl && (
+                  <a
+                    className="blog-btn"
+                    href={activeProject.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    ↗ Live
+                  </a>
+                )}
+                {activeProject.githubUrl && (
+                  <a
+                    className="blog-btn"
+                    href={activeProject.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    ⌥ GitHub
+                  </a>
+                )}
+                <button
+                  type="button"
+                  className="blog-btn ghost"
+                  onClick={() => setActiveProject(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
