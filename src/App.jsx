@@ -1523,6 +1523,7 @@ export default function App() {
                       }
                       onClick={e => {
                         e.preventDefault();
+                        console.log('Project clicked:', p.title);
                         setActiveProject(p);
                       }}
                     >
@@ -1553,7 +1554,10 @@ export default function App() {
       </div>
 
       {activeProject && (
-        <div className="modal-overlay" onClick={() => setActiveProject(null)}>
+        <div className="modal-overlay" onClick={() => {
+          console.log('Overlay clicked, closing modal');
+          setActiveProject(null);
+        }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button 
               className="modal-close" 
