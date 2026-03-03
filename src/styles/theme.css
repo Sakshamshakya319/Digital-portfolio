@@ -1129,3 +1129,185 @@ footer{
     font-size: 0.95rem;
   }
 }
+
+/* Hire Me Page */
+.hire-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.hire-info {
+  position: sticky;
+  top: 85px;
+}
+
+.hire-subtitle {
+  font-family: var(--ff1);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--c);
+}
+
+.hire-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--tx2);
+  margin-bottom: 2.5rem;
+}
+
+.hire-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.hire-feature {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: var(--bg2);
+  border: 1px solid var(--bor);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.hire-feature:hover {
+  border-color: var(--c);
+  background: rgba(0, 229, 255, 0.04);
+  transform: translateX(4px);
+}
+
+.hf-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.hf-title {
+  font-family: var(--ff1);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--tx);
+}
+
+.hf-desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--tx3);
+}
+
+.hire-skills {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--bor);
+  border-radius: 8px;
+}
+
+.hire-skills-title {
+  font-family: var(--ff3);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c);
+  margin-bottom: 1rem;
+}
+
+.hire-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hire-tag {
+  font-family: var(--ff3);
+  font-size: 0.7rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  color: var(--c);
+  border-radius: 999px;
+  transition: all 0.3s;
+}
+
+.hire-tag:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--c);
+}
+
+.hire-availability {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--ff3);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gr);
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 255, 136, 0.06);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 999px;
+}
+
+.hire-form {
+  background: var(--bg2);
+  border: 1px solid var(--bor);
+  padding: 2rem 2.5rem 2.5rem;
+  border-radius: 8px;
+  box-shadow: var(--sh);
+}
+
+.hire-form-title {
+  font-family: var(--ff1);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--tx);
+}
+
+.hire-form-subtitle {
+  font-size: 0.9rem;
+  color: var(--tx3);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hire-form .fg {
+  margin-bottom: 1.2rem;
+}
+
+.hire-form .fr {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.hire-form .fsub {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 968px) {
+  .hire-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .hire-info {
+    position: static;
+  }
+  
+  .hire-form {
+    padding: 1.5rem 1.8rem 2rem;
+  }
+  
+  .hire-form .fr {
+    grid-template-columns: 1fr;
+  }
+}

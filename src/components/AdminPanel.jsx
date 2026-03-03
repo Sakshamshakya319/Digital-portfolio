@@ -51,6 +51,9 @@ export default function AdminPanel() {
   const [contacts, setContacts] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [contactsError, setContactsError] = useState('');
+  const [hires, setHires] = useState([]);
+  const [hiresLoading, setHiresLoading] = useState(false);
+  const [hiresError, setHiresError] = useState('');
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
 
@@ -108,6 +111,47 @@ export default function AdminPanel() {
       .finally(() => setContactsLoading(false));
   }
 
+  function loadHires() {
+    setHiresLoading(true);
+    setHiresError('');
+    fetch('/api/admin/hires', {
+      credentials: 'include'
+    })
+      .then(async r => {
+        let data;
+        try {
+          data = await r.json();
+        } catch (e) {
+          data = {};
+        }
+        if (!r.ok) {
+          if (r.status === 401) {
+            setIsLoggedIn(false);
+            setLoginError('Admin session expired. Please sign in again.');
+            try {
+              if (typeof window !== 'undefined') {
+                window.localStorage.removeItem('adminLoggedIn');
+              }
+            } catch (e) {}
+          }
+          setHires([]);
+          setHiresError(
+            data && data.error
+              ? data.error
+              : 'Failed to fetch hire requests.'
+          );
+          return;
+        }
+        setIsLoggedIn(true);
+        setHires(Array.isArray(data.hires) ? data.hires : []);
+      })
+      .catch(() => {
+        setHires([]);
+        setHiresError('Network error while fetching hire requests.');
+      })
+      .finally(() => setHiresLoading(false));
+  }
+
   function loadProjects() {
     setProjectsLoading(true);
     fetch('/api/projects')
@@ -140,6 +184,9 @@ export default function AdminPanel() {
       }
       if (tab === 'contacts') {
         loadContacts();
+      }
+      if (tab === 'hires') {
+        loadHires();
       }
       if (tab === 'projects') {
         loadProjects();
@@ -557,6 +604,15 @@ export default function AdminPanel() {
               onClick={() => setTab('contacts')}
             >
               📬 Contact Messages
+            </button>
+            <button
+              type="button"
+              className={`ad-tab${
+                tab === 'hires' ? ' on' : ''
+              }`}
+              onClick={() => setTab('hires')}
+            >
+              💼 Hire Requests
             </button>
           </div>
         </div>
@@ -1097,6 +1153,66 @@ export default function AdminPanel() {
                       <td>{c.email}</td>
                       <td>{c.subject || '—'}</td>
                       <td>{c.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
+        {tab === 'hires' && (
+          <div className="admin-table">
+            <div className="admin-actions">
+              <button
+                type="button"
+                className="btn-g"
+                onClick={loadHires}
+                disabled={hiresLoading}
+              >
+                {hiresLoading ? 'Refreshing…' : 'Refresh'}
+              </button>
+            </div>
+            {hiresError && !hiresLoading && (
+              <div className="admin-error">{hiresError}</div>
+            )}
+            {hiresLoading ? (
+              <div className="admin-info">Loading hire requests…</div>
+            ) : hires.length === 0 ? (
+              <div className="admin-info">
+                No hire requests yet.
+              </div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Company</th>
+                    <th>Project Type</th>
+                    <th>Budget</th>
+                    <th>Timeline</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {hires.map(h => (
+                    <tr key={h._id}>
+                      <td>
+                        {h.createdAt
+                          ? new Date(h.createdAt).toLocaleString()
+                          : ''}
+                      </td>
+                      <td>{h.fullName}</td>
+                      <td>{h.email}</td>
+                      <td>{h.company || '—'}</td>
+                      <td>{h.projectType}</td>
+                      <td>{h.budget || '—'}</td>
+                      <td>{h.timeline || '—'}</td>
+                      <td style={{ maxWidth: '300px', whiteSpace: 'normal' }}>
+                        {h.description}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

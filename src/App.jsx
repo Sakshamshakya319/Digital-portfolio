@@ -363,6 +363,10 @@ function initPortfolioEffects() {
   let initialProjectSlug = '';
   if (path === '/admin') {
     initialPage = 'admin';
+  } else if (path === '/hire') {
+    initialPage = 'hire';
+  } else if (path === '/contact') {
+    initialPage = 'contact';
   } else if (path === '/blogs' || path === '/blog') {
     initialPage = 'blogs';
   } else if (path.startsWith('/blog/')) {
@@ -584,6 +588,58 @@ function initPortfolioEffects() {
     contactForm.addEventListener('submit', sendMsg);
   }
 
+  const hireForm = document.getElementById('hireForm');
+  async function sendHire(e) {
+    e.preventDefault();
+    if (!hireForm || !toast) return;
+
+    const formData = new FormData(hireForm);
+    const payload = {
+      fullName: formData.get('fullName') || '',
+      email: formData.get('email') || '',
+      phone: formData.get('phone') || '',
+      company: formData.get('company') || '',
+      projectType: formData.get('projectType') || '',
+      budget: formData.get('budget') || '',
+      timeline: formData.get('timeline') || '',
+      description: formData.get('description') || ''
+    };
+
+    try {
+      await fetch('/api/hire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+    }
+
+    toast.classList.add('show');
+    anime({
+      targets: '#toast',
+      translateY: [60, 0],
+      opacity: [0, 1],
+      duration: 500,
+      easing: 'easeOutBack'
+    });
+    setTimeout(() => {
+      anime({
+        targets: '#toast',
+        translateY: [0, 60],
+        opacity: [1, 0],
+        duration: 400,
+        easing: 'easeInQuad',
+        complete() {
+          toast.classList.remove('show');
+        }
+      });
+    }, 4000);
+    hireForm.reset();
+  }
+  if (hireForm) {
+    hireForm.addEventListener('submit', sendHire);
+  }
+
   anime({
     targets: '.logo-hex',
     boxShadow: [
@@ -694,6 +750,9 @@ export default function App() {
         <a href="#" data-pg="contact">
           Contact
         </a>
+        <a href="#" data-pg="hire">
+          Hire Me
+        </a>
       </div>
 
       <nav id="nav">
@@ -739,7 +798,7 @@ export default function App() {
           >
             ☀️
           </button>
-          <a className="hire-cta" href="#" data-pg="contact">
+          <a className="hire-cta" href="#" data-pg="hire">
             ⚡ Hire Me
           </a>
           <button className="hamburger" id="hamburgerBtn" type="button">
@@ -1276,12 +1335,12 @@ export default function App() {
                   <div className="tl-t">Bachelor&apos;s Degree — Computer Science</div>
                   <div className="tl-s">Lovely Professional University, Punjab</div>
                   <div className="tl-b">
-                    Completed B.Sc. CS at LPU with strong foundations in programming,
+                    Completed BCA CS at LPU with strong foundations in programming,
                     data structures, databases, web technologies, and networking.
                     Published Socio.io extension during this period.
                   </div>
                   <div className="tl-tags">
-                    <span className="etag">B.Sc. CS</span>
+                    <span className="etag">BCA CS</span>
                     <span className="etag">DSA</span>
                     <span className="etag">Web Dev</span>
                     <span className="etag">Socio.io</span>
@@ -1289,8 +1348,8 @@ export default function App() {
                 </div>
                 <div className="tl-item">
                   <div className="tl-gem dim" />
-                  <div className="tl-yr">Before 2022</div>
-                  <div className="tl-t">High School Diploma</div>
+                  <div className="tl-yr">At 2022</div>
+                  <div className="tl-t">Intermediate with Science</div>
                   <div className="tl-s">
                     Dr. Kiran Saujiya Senior Secondary School, Mainpuri
                   </div>
@@ -1298,6 +1357,23 @@ export default function App() {
                     Foundation in Science and Mathematics. Discovered passion for
                     computers and technology during school years, which led to
                     pursuing Computer Science at LPU.
+                  </div>
+                  <div className="tl-tags">
+                    <span className="etag">Science</span>
+                    <span className="etag">Mathematics</span>
+                    <span className="etag">Mainpuri, UP</span>
+                  </div>
+                </div>
+                <div className="tl-item">
+                  <div className="tl-gem dim" />
+                  <div className="tl-yr">At 2020</div>
+                  <div className="tl-t">High School</div>
+                  <div className="tl-s">
+                    St. Thomas Sr. Sec. School, Mainpuri
+                  </div>
+                  <div className="tl-b">
+                    Foundation in Science and Mathematics. Discovered passion for
+                    computers and technology during school years.
                   </div>
                   <div className="tl-tags">
                     <span className="etag">Science</span>
@@ -1318,15 +1394,15 @@ export default function App() {
                 <div className="cert">
                   <div className="cert-ic">🏅</div>
                   <div>
-                    <div className="cert-nm">Next.js — Advanced Development</div>
-                    <div className="cert-is">Udemy · 2024</div>
+                    <div className="cert-nm">Hone Communication and Public Speaking Skills for Successful Career</div>
+                    <div className="cert-is">Lovely Professional University · 2026</div>
                   </div>
                 </div>
                 <div className="cert">
                   <div className="cert-ic">⚡</div>
                   <div>
-                    <div className="cert-nm">Google Cloud APIs Integration</div>
-                    <div className="cert-is">Google · 2024</div>
+                    <div className="cert-nm">AptiGenius — A Comprehensive Course on Aptitude and Logical Reasoning</div>
+                    <div className="cert-is">Lovely Professional University · 2026</div>
                   </div>
                 </div>
                 <div className="cert">
@@ -1349,14 +1425,7 @@ export default function App() {
                     <div className="cert-nm">React.js Complete Guide</div>
                     <div className="cert-is">Udemy · 2023</div>
                   </div>
-                </div>
-                <div className="cert">
-                  <div className="cert-ic">📦</div>
-                  <div>
-                    <div className="cert-nm">MongoDB for JavaScript Developers</div>
-                    <div className="cert-is">MongoDB University · 2024</div>
-                  </div>
-                </div>
+                </div>            
               </div>
             </div>
           </div>
@@ -1641,6 +1710,7 @@ export default function App() {
                   <input
                     className="fi"
                     id="firstName"
+                    name="firstName"
                     type="text"
                     placeholder="Your name"
                     required
@@ -1653,6 +1723,7 @@ export default function App() {
                   <input
                     className="fi"
                     id="lastName"
+                    name="lastName"
                     type="text"
                     placeholder="Last name"
                   />
@@ -1665,6 +1736,7 @@ export default function App() {
                 <input
                   className="fi"
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="you@example.com"
                   required
@@ -1677,6 +1749,7 @@ export default function App() {
                 <input
                   className="fi"
                   id="subject"
+                  name="subject"
                   type="text"
                   placeholder="Project / Internship / Collaboration..."
                 />
@@ -1688,11 +1761,235 @@ export default function App() {
                 <textarea
                   className="fta"
                   id="message"
+                  name="message"
                   placeholder="Tell me what you're working on..."
+                  required
                 />
               </div>
               <button type="submit" className="fsub">
                 ⚡ Send Message
+              </button>
+            </form>
+          </div>
+        </section>
+        <footer>
+          <div className="ct">
+            <div className="ft">
+              SAKSHAM <span>SHAKYA</span>
+            </div>
+            <div className="fs">
+              Full-Stack Developer · MCA @ LPU · India 🇮🇳
+            </div>
+            <div className="fb2">
+              © 2025 Saksham Shakya · sakshamshakya.tech ·
+              {' "Vasudhaiva Kutumbakam"'}
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      <div className="page" id="page-hire">
+        <section className="sec ct">
+          <div className="sh ani">
+            <div className="sh-tag">Hire Me</div>
+            <h2 className="sh-title">
+              Let&apos;s Build <span className="cy">Together</span>
+            </h2>
+            <div className="sh-bar" />
+          </div>
+          <div className="hire-grid ani">
+            <div className="hire-info">
+              <h3 className="hire-subtitle">Why Work With Me?</h3>
+              <p className="hire-text">
+                I&apos;m a dedicated MCA student with hands-on experience in building
+                full-stack applications using modern technologies. I bring discipline,
+                consistency, and a production mindset to every project.
+              </p>
+              
+              <div className="hire-features">
+                <div className="hire-feature">
+                  <div className="hf-icon">⚡</div>
+                  <div>
+                    <h4 className="hf-title">Fast Turnaround</h4>
+                    <p className="hf-desc">
+                      I deliver quality work within agreed timelines, keeping you
+                      updated throughout the process.
+                    </p>
+                  </div>
+                </div>
+                <div className="hire-feature">
+                  <div className="hf-icon">🎯</div>
+                  <div>
+                    <h4 className="hf-title">Clean Code</h4>
+                    <p className="hf-desc">
+                      I write maintainable, well-documented code following industry
+                      best practices and standards.
+                    </p>
+                  </div>
+                </div>
+                <div className="hire-feature">
+                  <div className="hf-icon">💬</div>
+                  <div>
+                    <h4 className="hf-title">Clear Communication</h4>
+                    <p className="hf-desc">
+                      Regular updates, transparent progress tracking, and responsive
+                      to feedback.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hire-skills">
+                <h4 className="hire-skills-title">Tech Stack</h4>
+                <div className="hire-tags">
+                  <span className="hire-tag">React</span>
+                  <span className="hire-tag">Next.js</span>
+                  <span className="hire-tag">Node.js</span>
+                  <span className="hire-tag">Express</span>
+                  <span className="hire-tag">MongoDB</span>
+                  <span className="hire-tag">Firebase</span>
+                  <span className="hire-tag">TypeScript</span>
+                  <span className="hire-tag">Tailwind CSS</span>
+                  <span className="hire-tag">REST APIs</span>
+                  <span className="hire-tag">Git</span>
+                </div>
+              </div>
+
+              <div className="hire-availability">
+                <span className="sdot" />
+                <span>Available for Freelance Projects &amp; Internships</span>
+              </div>
+            </div>
+
+            <form className="hire-form" id="hireForm">
+              <h3 className="hire-form-title">Project Details</h3>
+              <p className="hire-form-subtitle">
+                Fill out the form below and I&apos;ll get back to you within 24 hours.
+              </p>
+
+              <div className="fg">
+                <label className="fl" htmlFor="hireFullName">
+                  Full Name *
+                </label>
+                <input
+                  className="fi"
+                  id="hireFullName"
+                  name="fullName"
+                  type="text"
+                  placeholder="Your full name"
+                  required
+                />
+              </div>
+
+              <div className="fr">
+                <div className="fg">
+                  <label className="fl" htmlFor="hireEmail">
+                    Email *
+                  </label>
+                  <input
+                    className="fi"
+                    id="hireEmail"
+                    name="email"
+                    type="email"
+                    placeholder="you@company.com"
+                    required
+                  />
+                </div>
+                <div className="fg">
+                  <label className="fl" htmlFor="hirePhone">
+                    Phone
+                  </label>
+                  <input
+                    className="fi"
+                    id="hirePhone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+91 XXXXX XXXXX"
+                  />
+                </div>
+              </div>
+
+              <div className="fg">
+                <label className="fl" htmlFor="hireCompany">
+                  Company / Organization
+                </label>
+                <input
+                  className="fi"
+                  id="hireCompany"
+                  name="company"
+                  type="text"
+                  placeholder="Your company name"
+                />
+              </div>
+
+              <div className="fg">
+                <label className="fl" htmlFor="hireProjectType">
+                  Project Type *
+                </label>
+                <select
+                  className="fi"
+                  id="hireProjectType"
+                  name="projectType"
+                  required
+                >
+                  <option value="">Select project type</option>
+                  <option value="web-app">Web Application</option>
+                  <option value="website">Website</option>
+                  <option value="api">API Development</option>
+                  <option value="fullstack">Full-Stack Project</option>
+                  <option value="frontend">Frontend Development</option>
+                  <option value="backend">Backend Development</option>
+                  <option value="internship">Internship Opportunity</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="fr">
+                <div className="fg">
+                  <label className="fl" htmlFor="hireBudget">
+                    Budget Range
+                  </label>
+                  <select className="fi" id="hireBudget" name="budget">
+                    <option value="">Select budget</option>
+                    <option value="under-10k">Under ₹10,000</option>
+                    <option value="10k-25k">₹10,000 - ₹25,000</option>
+                    <option value="25k-50k">₹25,000 - ₹50,000</option>
+                    <option value="50k-100k">₹50,000 - ₹1,00,000</option>
+                    <option value="above-100k">Above ₹1,00,000</option>
+                    <option value="negotiable">Negotiable</option>
+                  </select>
+                </div>
+                <div className="fg">
+                  <label className="fl" htmlFor="hireTimeline">
+                    Timeline
+                  </label>
+                  <select className="fi" id="hireTimeline" name="timeline">
+                    <option value="">Select timeline</option>
+                    <option value="urgent">Urgent (1-2 weeks)</option>
+                    <option value="short">Short (2-4 weeks)</option>
+                    <option value="medium">Medium (1-2 months)</option>
+                    <option value="long">Long (2+ months)</option>
+                    <option value="flexible">Flexible</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="fg">
+                <label className="fl" htmlFor="hireDescription">
+                  Project Description *
+                </label>
+                <textarea
+                  className="fta"
+                  id="hireDescription"
+                  name="description"
+                  placeholder="Tell me about your project, goals, and requirements..."
+                  rows="6"
+                  required
+                />
+              </div>
+
+              <button type="submit" className="fsub">
+                🚀 Submit Project Request
               </button>
             </form>
           </div>
