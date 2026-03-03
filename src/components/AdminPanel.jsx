@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import ContactViewer from './ContactViewer.jsx';
+import HireViewer from './HireViewer.jsx';
 
 export default function AdminPanel() {
   const [email, setEmail] = useState('');
@@ -1108,116 +1110,14 @@ export default function AdminPanel() {
         )}
 
         {tab === 'contacts' && (
-          <div className="admin-table">
-            <div className="admin-actions">
-              <button
-                type="button"
-                className="btn-g"
-                onClick={loadContacts}
-                disabled={contactsLoading}
-              >
-                {contactsLoading ? 'Refreshing…' : 'Refresh'}
-              </button>
-            </div>
-            {contactsError && !contactsLoading && (
-              <div className="admin-error">{contactsError}</div>
-            )}
-            {contactsLoading ? (
-              <div className="admin-info">Loading messages…</div>
-            ) : contacts.length === 0 ? (
-              <div className="admin-info">
-                No contact form submissions yet.
-              </div>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Subject</th>
-                    <th>Message</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contacts.map(c => (
-                    <tr key={c._id}>
-                      <td>
-                        {c.createdAt
-                          ? new Date(c.createdAt).toLocaleString()
-                          : ''}
-                      </td>
-                      <td>
-                        {c.firstName} {c.lastName}
-                      </td>
-                      <td>{c.email}</td>
-                      <td>{c.subject || '—'}</td>
-                      <td>{c.message}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+          <div className="admin-section">
+            <ContactViewer />
           </div>
         )}
 
         {tab === 'hires' && (
-          <div className="admin-table">
-            <div className="admin-actions">
-              <button
-                type="button"
-                className="btn-g"
-                onClick={loadHires}
-                disabled={hiresLoading}
-              >
-                {hiresLoading ? 'Refreshing…' : 'Refresh'}
-              </button>
-            </div>
-            {hiresError && !hiresLoading && (
-              <div className="admin-error">{hiresError}</div>
-            )}
-            {hiresLoading ? (
-              <div className="admin-info">Loading hire requests…</div>
-            ) : hires.length === 0 ? (
-              <div className="admin-info">
-                No hire requests yet.
-              </div>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Company</th>
-                    <th>Project Type</th>
-                    <th>Budget</th>
-                    <th>Timeline</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {hires.map(h => (
-                    <tr key={h._id}>
-                      <td>
-                        {h.createdAt
-                          ? new Date(h.createdAt).toLocaleString()
-                          : ''}
-                      </td>
-                      <td>{h.fullName}</td>
-                      <td>{h.email}</td>
-                      <td>{h.company || '—'}</td>
-                      <td>{h.projectType}</td>
-                      <td>{h.budget || '—'}</td>
-                      <td>{h.timeline || '—'}</td>
-                      <td style={{ maxWidth: '300px', whiteSpace: 'normal' }}>
-                        {h.description}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+          <div className="admin-section">
+            <HireViewer />
           </div>
         )}
 
