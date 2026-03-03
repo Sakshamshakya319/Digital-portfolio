@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "blogs": {
+      ".read": true,
+      ".write": false,
+      "$blogId": {
+        "likes": {
+          ".write": true
+        }
+      }
+    },
+    "projects": {
+      ".read": true,
+      ".write": false
+    },
+    "contacts": {
+      ".read": false,
+      ".write": true
+    }
+  }
+}

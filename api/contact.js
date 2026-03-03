@@ -1,19 +1,4 @@
-const { MongoClient } = require('mongodb');
-
-const uri = process.env.MONGODB_URI;
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
+const { getAdminDatabase } = require('./firebase-admin');
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -62,18 +47,16 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    await getClient();
-    const dbClient = client;
-    const db = dbClient.db('portfolio');
-    const col = db.collection('contacts');
+    const db = getAdminDatabase();
+    const contactsRef = db.ref('contacts');
 
-    await col.insertOne({
+    await contactsRef.push({
       firstName,
       lastName: lastName || '',
       email,
       subject: subject || '',
       message,
-      createdAt: new Date(),
+      createdAt: Date.now(),
       status: 'new'
     });
 
@@ -81,9 +64,9 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ ok: true }));
   } catch (e) {
+    console.error('Error submitting contact:', e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: 'Failed to submit contact form' }));
   }
 };
-

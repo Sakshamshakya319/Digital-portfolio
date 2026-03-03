@@ -1,22 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb');
 const { verify } = require('jsonwebtoken');
+const { getAdminDatabase } = require('./firebase-admin');
 
-const uri = process.env.MONGODB_URI;
 const jwtSecret = process.env.ADMIN_JWT_SECRET || 'change-me-in-env';
-
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
 
 function getTokenFromCookie(req) {
   const header = req.headers.cookie || '';
@@ -74,32 +59,44 @@ function createSlug(title) {
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-      await getClient();
-      const dbClient = client;
-      const db = dbClient.db('portfolio');
-      const col = db.collection('blogs');
+      const db = getAdminDatabase();
+      const blogsRef = db.ref('blogs');
 
       const url = new URL(req.url || '', 'http://localhost');
       const id = url.searchParams.get('id');
       const slug = url.searchParams.get('slug');
 
       if (id || slug) {
-        const query = id
-          ? { _id: new ObjectId(id) }
-          : { slug };
-        const doc = await col.findOne(query);
+        const snapshot = await blogsRef.once('value');
+        const allBlogs = snapshot.val() || {};
+        
+        let doc = null;
+        if (id) {
+          doc = allBlogs[id];
+          if (doc) doc._id = id;
+        } else {
+          // Find by slug
+          for (const [key, value] of Object.entries(allBlogs)) {
+            if (value.slug === slug) {
+              doc = { ...value, _id: key };
+              break;
+            }
+          }
+        }
+
         if (!doc) {
           res.statusCode = 404;
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ error: 'Blog not found' }));
           return;
         }
+
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.end(
           JSON.stringify({
             blog: {
-              _id: String(doc._id),
+              _id: doc._id,
               slug: doc.slug || '',
               title: doc.title || '',
               meta: doc.meta || '',
@@ -108,7 +105,7 @@ module.exports = async function handler(req, res) {
               date: doc.date || '2025',
               keywords: Array.isArray(doc.keywords)
                 ? doc.keywords.join(', ')
-                : '',
+                : doc.keywords || '',
               imageUrl: doc.imageUrl || '',
               likes: doc.likes || 0,
               body: doc.body || ''
@@ -118,34 +115,39 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      const blogs = await col
-        .find({})
-        .sort({ date: -1 })
-        .limit(50)
-        .toArray();
+      // Get all blogs
+      const snapshot = await blogsRef.once('value');
+      const blogsData = snapshot.val() || {};
+      
+      const blogs = Object.entries(blogsData).map(([id, blog]) => ({
+        _id: id,
+        slug: blog.slug || '',
+        title: blog.title || '',
+        meta: blog.meta || '',
+        category: blog.category || 'General',
+        readTime: blog.readTime || '5 min',
+        date: blog.date || '2025',
+        keywords: Array.isArray(blog.keywords)
+          ? blog.keywords.join(', ')
+          : blog.keywords || '',
+        imageUrl: blog.imageUrl || '',
+        likes: blog.likes || 0,
+        body: blog.body || '',
+        createdAt: blog.createdAt || 0
+      }));
+
+      // Sort by date descending
+      blogs.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
 
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          blogs: blogs.map(b => ({
-            _id: String(b._id),
-            slug: b.slug || '',
-            title: b.title || '',
-            meta: b.meta || '',
-            category: b.category || 'General',
-            readTime: b.readTime || '5 min',
-            date: b.date || '2025',
-            keywords: Array.isArray(b.keywords)
-              ? b.keywords.join(', ')
-              : '',
-            imageUrl: b.imageUrl || '',
-            likes: b.likes || 0,
-            body: b.body || ''
-          }))
-        })
-      );
+      res.end(JSON.stringify({ blogs: blogs.slice(0, 50) }));
     } catch (e) {
+      console.error('Error fetching blogs:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Failed to fetch blogs' }));
@@ -182,20 +184,21 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      await getClient();
-      const dbClient = client;
-      const db = dbClient.db('portfolio');
-      const col = db.collection('blogs');
+      const db = getAdminDatabase();
+      const blogsRef = db.ref('blogs');
 
+      // Check for existing slug
       const baseSlug = createSlug(title);
       let slug = baseSlug;
       let suffix = 1;
-      while (await col.findOne({ slug })) {
+      
+      const snapshot = await blogsRef.once('value');
+      const existingBlogs = snapshot.val() || {};
+      
+      while (Object.values(existingBlogs).some(b => b.slug === slug)) {
         slug = `${baseSlug}-${suffix}`;
         suffix += 1;
-        if (suffix > 50) {
-          break;
-        }
+        if (suffix > 50) break;
       }
 
       const doc = {
@@ -213,16 +216,17 @@ module.exports = async function handler(req, res) {
         body: content || '',
         likes: 0,
         slug,
-        createdAt: new Date(),
+        createdAt: Date.now(),
         createdBy: admin.sub
       };
 
-      const result = await col.insertOne(doc);
+      const newBlogRef = await blogsRef.push(doc);
 
       res.statusCode = 201;
       res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ ok: true, id: String(result.insertedId) }));
+      res.end(JSON.stringify({ ok: true, id: newBlogRef.key }));
     } catch (e) {
+      console.error('Error creating blog:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Failed to create blog' }));
@@ -241,37 +245,48 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      await getClient();
-      const dbClient = client;
-      const db = dbClient.db('portfolio');
-      const col = db.collection('blogs');
+      const db = getAdminDatabase();
+      const blogsRef = db.ref('blogs');
 
-      const filter = id
-        ? { _id: new ObjectId(id) }
-        : { slug };
+      let blogId = id;
+      if (!blogId && slug) {
+        // Find by slug
+        const snapshot = await blogsRef.once('value');
+        const allBlogs = snapshot.val() || {};
+        for (const [key, value] of Object.entries(allBlogs)) {
+          if (value.slug === slug) {
+            blogId = key;
+            break;
+          }
+        }
+      }
 
-      const result = await col.findOneAndUpdate(
-        filter,
-        { $inc: { likes: 1 } },
-        { returnDocument: 'after' }
-      );
-
-      if (!result.value) {
+      if (!blogId) {
         res.statusCode = 404;
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({ error: 'Blog not found' }));
         return;
       }
 
+      const blogRef = db.ref(`blogs/${blogId}`);
+      const snapshot = await blogRef.once('value');
+      const blog = snapshot.val();
+
+      if (!blog) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Blog not found' }));
+        return;
+      }
+
+      const newLikes = (blog.likes || 0) + 1;
+      await blogRef.update({ likes: newLikes });
+
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          ok: true,
-          likes: result.value.likes || 0
-        })
-      );
+      res.end(JSON.stringify({ ok: true, likes: newLikes }));
     } catch (e) {
+      console.error('Error updating likes:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Failed to update likes' }));

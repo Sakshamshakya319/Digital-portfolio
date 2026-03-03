@@ -1,22 +1,7 @@
-const { MongoClient } = require('mongodb');
 const { verify } = require('jsonwebtoken');
+const { getAdminDatabase } = require('../firebase-admin');
 
-const uri = process.env.MONGODB_URI;
 const jwtSecret = process.env.ADMIN_JWT_SECRET || 'change-me-in-env';
-
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
 
 function getTokenFromCookie(req) {
   const header = req.headers.cookie || '';
@@ -55,37 +40,33 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    await getClient();
-    const dbClient = client;
-    const db = dbClient.db('portfolio');
-    const col = db.collection('contacts');
+    const db = getAdminDatabase();
+    const contactsRef = db.ref('contacts');
 
-    const items = await col
-      .find({})
-      .sort({ createdAt: -1 })
-      .limit(100)
-      .toArray();
+    const snapshot = await contactsRef.once('value');
+    const contactsData = snapshot.val() || {};
+
+    const items = Object.entries(contactsData).map(([id, contact]) => ({
+      _id: id,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      email: contact.email,
+      subject: contact.subject,
+      message: contact.message,
+      status: contact.status || 'new',
+      createdAt: contact.createdAt
+    }));
+
+    // Sort by createdAt descending
+    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.end(
-      JSON.stringify({
-        contacts: items.map(c => ({
-          _id: String(c._id),
-          firstName: c.firstName,
-          lastName: c.lastName,
-          email: c.email,
-          subject: c.subject,
-          message: c.message,
-          status: c.status || 'new',
-          createdAt: c.createdAt
-        }))
-      })
-    );
+    res.end(JSON.stringify({ contacts: items.slice(0, 100) }));
   } catch (e) {
+    console.error('Error fetching contacts:', e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: 'Failed to fetch contacts' }));
   }
 };
-

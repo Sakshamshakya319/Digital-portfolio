@@ -1,22 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb');
 const { verify } = require('jsonwebtoken');
+const { getAdminDatabase } = require('./firebase-admin');
 
-const uri = process.env.MONGODB_URI;
 const jwtSecret = process.env.ADMIN_JWT_SECRET || 'change-me-in-env';
-
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
 
 function getTokenFromCookie(req) {
   const header = req.headers.cookie || '';
@@ -74,32 +59,44 @@ function createSlug(title) {
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-      await getClient();
-      const dbClient = client;
-      const db = dbClient.db('portfolio');
-      const col = db.collection('projects');
+      const db = getAdminDatabase();
+      const projectsRef = db.ref('projects');
 
       const url = new URL(req.url || '', 'http://localhost');
       const id = url.searchParams.get('id');
       const slug = url.searchParams.get('slug');
 
       if (id || slug) {
-        const query = id
-          ? { _id: new ObjectId(id) }
-          : { slug };
-        const doc = await col.findOne(query);
+        const snapshot = await projectsRef.once('value');
+        const allProjects = snapshot.val() || {};
+        
+        let doc = null;
+        if (id) {
+          doc = allProjects[id];
+          if (doc) doc._id = id;
+        } else {
+          // Find by slug
+          for (const [key, value] of Object.entries(allProjects)) {
+            if (value.slug === slug) {
+              doc = { ...value, _id: key };
+              break;
+            }
+          }
+        }
+
         if (!doc) {
           res.statusCode = 404;
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ error: 'Project not found' }));
           return;
         }
+
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.end(
           JSON.stringify({
             project: {
-              _id: String(doc._id),
+              _id: doc._id,
               slug: doc.slug || '',
               title: doc.title || '',
               summary: doc.summary || '',
@@ -107,7 +104,7 @@ module.exports = async function handler(req, res) {
               category: doc.category || '',
               status: doc.status || '',
               date: doc.date || '',
-              tags: Array.isArray(doc.tags) ? doc.tags.join(', ') : '',
+              tags: Array.isArray(doc.tags) ? doc.tags.join(', ') : doc.tags || '',
               imageUrl: doc.imageUrl || '',
               liveUrl: doc.liveUrl || '',
               githubUrl: doc.githubUrl || '',
@@ -118,34 +115,39 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      const projects = await col
-        .find({})
-        .sort({ date: -1, createdAt: -1 })
-        .limit(50)
-        .toArray();
+      // Get all projects
+      const snapshot = await projectsRef.once('value');
+      const projectsData = snapshot.val() || {};
+      
+      const projects = Object.entries(projectsData).map(([id, project]) => ({
+        _id: id,
+        slug: project.slug || '',
+        title: project.title || '',
+        summary: project.summary || '',
+        type: project.type || '',
+        category: project.category || '',
+        status: project.status || '',
+        date: project.date || '',
+        tags: Array.isArray(project.tags) ? project.tags.join(', ') : project.tags || '',
+        imageUrl: project.imageUrl || '',
+        liveUrl: project.liveUrl || '',
+        githubUrl: project.githubUrl || '',
+        body: project.body || '',
+        createdAt: project.createdAt || 0
+      }));
+
+      // Sort by date descending
+      projects.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
 
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          projects: projects.map(p => ({
-            _id: String(p._id),
-            slug: p.slug || '',
-            title: p.title || '',
-            summary: p.summary || '',
-            type: p.type || '',
-            category: p.category || '',
-            status: p.status || '',
-            date: p.date || '',
-            tags: Array.isArray(p.tags) ? p.tags.join(', ') : '',
-            imageUrl: p.imageUrl || '',
-            liveUrl: p.liveUrl || '',
-            githubUrl: p.githubUrl || '',
-            body: p.body || ''
-          }))
-        })
-      );
+      res.end(JSON.stringify({ projects: projects.slice(0, 50) }));
     } catch (e) {
+      console.error('Error fetching projects:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Failed to fetch projects' }));
@@ -185,20 +187,21 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      await getClient();
-      const dbClient = client;
-      const db = dbClient.db('portfolio');
-      const col = db.collection('projects');
+      const db = getAdminDatabase();
+      const projectsRef = db.ref('projects');
 
+      // Check for existing slug
       const baseSlug = createSlug(title);
       let slug = baseSlug;
       let suffix = 1;
-      while (await col.findOne({ slug })) {
+      
+      const snapshot = await projectsRef.once('value');
+      const existingProjects = snapshot.val() || {};
+      
+      while (Object.values(existingProjects).some(p => p.slug === slug)) {
         slug = `${baseSlug}-${suffix}`;
         suffix += 1;
-        if (suffix > 50) {
-          break;
-        }
+        if (suffix > 50) break;
       }
 
       const tagArray = Array.isArray(tags)
@@ -220,16 +223,17 @@ module.exports = async function handler(req, res) {
         githubUrl: githubUrl || '',
         body: projectBody || '',
         slug,
-        createdAt: new Date(),
+        createdAt: Date.now(),
         createdBy: admin.sub
       };
 
-      const result = await col.insertOne(doc);
+      const newProjectRef = await projectsRef.push(doc);
 
       res.statusCode = 201;
       res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ ok: true, id: String(result.insertedId) }));
+      res.end(JSON.stringify({ ok: true, id: newProjectRef.key }));
     } catch (e) {
+      console.error('Error creating project:', e);
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Failed to create project' }));
@@ -241,4 +245,3 @@ module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify({ error: 'Method not allowed' }));
 };
-

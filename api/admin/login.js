@@ -1,24 +1,9 @@
 const { sign } = require('jsonwebtoken');
-const { MongoClient } = require('mongodb');
+const { getAdminAuth } = require('../firebase-admin');
 
-const uri = process.env.MONGODB_URI;
 const adminEmail = process.env.ADMIN_EMAIL;
 const adminPassword = process.env.ADMIN_PASSWORD;
 const jwtSecret = process.env.ADMIN_JWT_SECRET || 'change-me-in-env';
-
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -63,7 +48,6 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    await getClient();
     const body = await readBody(req);
     const { email, password } = body;
 

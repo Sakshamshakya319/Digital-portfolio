@@ -1,22 +1,7 @@
-const { MongoClient } = require('mongodb');
 const { verify } = require('jsonwebtoken');
+const { getAdminDatabase } = require('../firebase-admin');
 
-const uri = process.env.MONGODB_URI;
 const jwtSecret = process.env.ADMIN_JWT_SECRET || 'change-me-in-env';
-
-let client;
-let clientPromise;
-
-function getClient() {
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  if (!clientPromise) {
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
-  }
-  return clientPromise;
-}
 
 function getTokenFromCookie(req) {
   const header = req.headers.cookie || '';
@@ -55,20 +40,20 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    await getClient();
-    const dbClient = client;
-    const db = dbClient.db('portfolio');
-    const col = db.collection('blogs');
+    const db = getAdminDatabase();
+    const blogsRef = db.ref('blogs');
 
-    const existing = await col.countDocuments({});
-    if (existing > 0) {
+    const snapshot = await blogsRef.once('value');
+    const existing = snapshot.val();
+    
+    if (existing && Object.keys(existing).length > 0) {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ ok: true, skipped: true }));
       return;
     }
 
-    const now = new Date();
+    const now = Date.now();
     function slug(t) {
       const base = String(t || '')
         .toLowerCase()
@@ -83,7 +68,7 @@ module.exports = async function handler(req, res) {
     const docs = [
       {
         title:
-          'Mastering Next.js App Router — A Student’s Real-World Guide',
+          'Mastering Next.js App Router — A Student's Real-World Guide',
         meta:
           'From pages to app directory — what I learned building production apps at LPU.',
         category: 'Next.js',
@@ -95,7 +80,7 @@ module.exports = async function handler(req, res) {
           'Next.js App Router changes how pages are structured and rendered in real projects. In this article, I walk through how I migrated from the pages router, how layouts simplify shared UI, and which patterns helped me keep my portfolio fast, secure, and easy to maintain.\n\nYou will see how server components reduce client-side JavaScript, how loading states work out of the box, and why deploying to Vercel makes the entire flow feel seamless for a student developer.',
         likes: 0,
         slug: slug(
-          'Mastering Next.js App Router — A Student’s Real-World Guide'
+          'Mastering Next.js App Router — A Student's Real-World Guide'
         ),
         createdAt: now,
         createdBy: admin.sub
@@ -140,7 +125,7 @@ module.exports = async function handler(req, res) {
       },
       {
         title:
-          'I Built and Published Socio.io — Here’s What I Learned',
+          'I Built and Published Socio.io — Here's What I Learned',
         meta:
           'From idea to published extension — a practical roadmap for student developers.',
         category: 'Frontend',
@@ -151,18 +136,24 @@ module.exports = async function handler(req, res) {
         body:
           'Socio.io started as a small idea to improve how people interact with social platforms, and ended as a published browser extension used by real users. In this article I break down the steps: validating the idea, designing the UX, building the MVP, and finally submitting and maintaining the extension.\n\nAlong the way, I highlight the tools, mistakes, and lessons that any student developer can reuse for their own product.',
         likes: 0,
-        slug: slug('I Built and Published Socio.io — Here’s What I Learned'),
+        slug: slug('I Built and Published Socio.io — Here's What I Learned'),
         createdAt: now,
         createdBy: admin.sub
       }
     ];
 
-    await col.insertMany(docs);
+    // Push each blog to Firebase
+    let seeded = 0;
+    for (const doc of docs) {
+      await blogsRef.push(doc);
+      seeded++;
+    }
 
     res.statusCode = 201;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ ok: true, seeded: docs.length }));
+    res.end(JSON.stringify({ ok: true, seeded }));
   } catch (e) {
+    console.error('Error seeding blogs:', e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: 'Failed to seed blogs' }));
