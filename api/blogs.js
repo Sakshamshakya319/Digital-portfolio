@@ -313,6 +313,133 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  if (req.method === 'PUT') {
+    const admin = requireAdmin(req);
+    if (!admin) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+
+    try {
+      const body = await readBody(req);
+      const {
+        id,
+        title,
+        meta,
+        category,
+        readTime,
+        date,
+        keywords,
+        content,
+        imageUrl
+      } = body || {};
+
+      if (!id) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Blog ID is required' }));
+        return;
+      }
+
+      if (!title || !meta) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Title and meta are required' }));
+        return;
+      }
+
+      const db = getAdminDatabase();
+      const blogRef = db.ref(`blogs/${id}`);
+
+      const snapshot = await blogRef.once('value');
+      if (!snapshot.exists()) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Blog not found' }));
+        return;
+      }
+
+      const existingBlog = snapshot.val();
+
+      const updatedDoc = {
+        ...existingBlog,
+        title,
+        meta,
+        category: category || 'General',
+        readTime: readTime || '5 min',
+        date: date || new Date().toISOString().slice(0, 10),
+        keywords: Array.isArray(keywords)
+          ? keywords
+          : typeof keywords === 'string' && keywords.trim()
+          ? keywords.split(',').map(k => k.trim())
+          : [],
+        imageUrl: imageUrl || '',
+        body: content || '',
+        updatedAt: Date.now(),
+        updatedBy: admin.sub
+      };
+
+      await blogRef.set(updatedDoc);
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ ok: true, id }));
+    } catch (e) {
+      console.error('Error updating blog:', e);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Failed to update blog' }));
+    }
+    return;
+  }
+
+  if (req.method === 'DELETE') {
+    const admin = requireAdmin(req);
+    if (!admin) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+
+    try {
+      const url = new URL(req.url || '', 'http://localhost');
+      const id = url.searchParams.get('id');
+
+      if (!id) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Blog ID is required' }));
+        return;
+      }
+
+      const db = getAdminDatabase();
+      const blogRef = db.ref(`blogs/${id}`);
+
+      const snapshot = await blogRef.once('value');
+      if (!snapshot.exists()) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Blog not found' }));
+        return;
+      }
+
+      await blogRef.remove();
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) {
+      console.error('Error deleting blog:', e);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Failed to delete blog' }));
+    }
+    return;
+  }
+
   res.statusCode = 405;
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify({ error: 'Method not allowed' }));

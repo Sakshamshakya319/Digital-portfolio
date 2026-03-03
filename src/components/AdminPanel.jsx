@@ -22,6 +22,7 @@ export default function AdminPanel() {
   const [blogContent, setBlogContent] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [blogMessage, setBlogMessage] = useState('');
+  const [editingBlogId, setEditingBlogId] = useState(null);
   const quillModules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -241,39 +242,47 @@ export default function AdminPanel() {
     setBusy(true);
     setBlogMessage('');
     try {
+      const method = editingBlogId ? 'PUT' : 'POST';
+      const body = {
+        title: blogTitle,
+        meta: blogMeta,
+        category: blogCategory,
+        readTime: blogReadTime,
+        date: blogDate,
+        keywords: blogKeywords,
+        imageUrl: blogImageUrl,
+        content: blogContent
+      };
+
+      if (editingBlogId) {
+        body.id = editingBlogId;
+      }
+
       const res = await fetch('/api/blogs', {
-        method: 'POST',
+        method,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          title: blogTitle,
-          meta: blogMeta,
-          category: blogCategory,
-          readTime: blogReadTime,
-          date: blogDate,
-          keywords: blogKeywords,
-          imageUrl: blogImageUrl,
-          content: blogContent
-        })
+        body: JSON.stringify(body)
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        setBlogMessage(data.error || 'Failed to create blog');
+        setBlogMessage(data.error || `Failed to ${editingBlogId ? 'update' : 'create'} blog`);
         return;
       }
-      setBlogMessage('Blog published successfully.');
+      setBlogMessage(`Blog ${editingBlogId ? 'updated' : 'published'} successfully.`);
       setBlogTitle('');
       setBlogMeta('');
       setBlogKeywords('');
-       setBlogImageUrl('');
-       setBlogContent('');
-       setShowPreview(false);
+      setBlogImageUrl('');
+      setBlogContent('');
+      setShowPreview(false);
+      setEditingBlogId(null);
       if (tab === 'blogs') {
         loadBlogs();
       }
     } catch (err) {
-      setBlogMessage('Network error while creating blog');
+      setBlogMessage(`Network error while ${editingBlogId ? 'updating' : 'creating'} blog`);
     } finally {
       setBusy(false);
     }
@@ -376,6 +385,29 @@ export default function AdminPanel() {
       }
     } catch (err) {
       setProjectMessage(`Network error while ${editingProjectId ? 'updating' : 'creating'} project`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDeleteBlog(blogId) {
+    if (!window.confirm('Are you sure you want to delete this blog?')) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/blogs?id=${blogId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alert(data.error || 'Failed to delete blog');
+        return;
+      }
+      loadBlogs();
+    } catch (err) {
+      alert('Network error while deleting blog');
     } finally {
       setBusy(false);
     }
@@ -531,6 +563,11 @@ export default function AdminPanel() {
 
         {tab === 'create' && (
           <form className="admin-form" onSubmit={handleCreateBlog}>
+            {editingBlogId && (
+              <div className="admin-info">
+                Editing blog. Click "Cancel Edit" to create a new blog instead.
+              </div>
+            )}
             <div className="fg">
               <label className="fl" htmlFor="blogTitle">
                 Title
@@ -653,7 +690,7 @@ export default function AdminPanel() {
                 className="fsub"
                 disabled={busy}
               >
-                {busy ? 'Publishing…' : 'Publish Blog'}
+                {busy ? 'Publishing…' : editingBlogId ? 'Update Blog' : 'Publish Blog'}
               </button>
               <button
                 type="button"
@@ -671,6 +708,28 @@ export default function AdminPanel() {
               >
                 Seed Sample Blogs
               </button>
+              {editingBlogId && (
+                <button
+                  type="button"
+                  className="btn-g"
+                  onClick={() => {
+                    setEditingBlogId(null);
+                    setBlogTitle('');
+                    setBlogMeta('');
+                    setBlogCategory('Next.js');
+                    setBlogReadTime('5 min');
+                    setBlogDate('');
+                    setBlogKeywords('');
+                    setBlogImageUrl('');
+                    setBlogContent('');
+                    setShowPreview(false);
+                    setBlogMessage('');
+                  }}
+                  disabled={busy}
+                >
+                  Cancel Edit
+                </button>
+              )}
             </div>
             {showPreview && (
               <div className="admin-preview">
@@ -943,6 +1002,7 @@ export default function AdminPanel() {
                     <th>Category</th>
                     <th>Read Time</th>
                     <th>Date</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -953,6 +1013,36 @@ export default function AdminPanel() {
                       <td>{b.category}</td>
                       <td>{b.readTime}</td>
                       <td>{b.date}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn-g"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', marginRight: '0.5rem' }}
+                          onClick={() => {
+                            setTab('create');
+                            setEditingBlogId(b._id);
+                            setBlogTitle(b.title || '');
+                            setBlogMeta(b.meta || '');
+                            setBlogCategory(b.category || 'Next.js');
+                            setBlogReadTime(b.readTime || '5 min');
+                            setBlogDate(b.date || '');
+                            setBlogKeywords(b.keywords || '');
+                            setBlogImageUrl(b.imageUrl || '');
+                            setBlogContent(b.body || '');
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-g"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', borderColor: 'var(--re)', color: 'var(--re)' }}
+                          onClick={() => handleDeleteBlog(b._id)}
+                          disabled={busy}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

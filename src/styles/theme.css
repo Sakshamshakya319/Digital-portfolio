@@ -1000,3 +1000,132 @@ footer{
     font-size: 0.95rem;
   }
 }
+
+/* Blog Reader Full Page */
+.blog-reader-wrap {
+  min-height: calc(100vh - 60px);
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.blog-reader-full {
+  max-width: 900px;
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--bor);
+  padding: 2.5rem 3rem 3rem;
+  box-shadow: var(--sh);
+  position: relative;
+}
+
+.blog-reader-full .blog-reader-head {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--bor);
+}
+
+.blog-reader-full .blog-reader-title {
+  font-size: 2.2rem;
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+}
+
+.blog-reader-full .blog-reader-eyebrow {
+  font-size: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+.blog-reader-full .blog-reader-meta {
+  font-size: 0.7rem;
+}
+
+.blog-reader-full .blog-reader-image {
+  margin-bottom: 2.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--bor);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.blog-reader-full .blog-reader-body {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--tx2);
+  margin-bottom: 2.5rem;
+}
+
+.blog-reader-full .blog-reader-body p {
+  margin-bottom: 1.5rem;
+}
+
+.blog-reader-full .blog-reader-html h1,
+.blog-reader-full .blog-reader-html h2,
+.blog-reader-full .blog-reader-html h3 {
+  color: var(--c);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.blog-reader-full .blog-reader-html p {
+  margin-bottom: 1.5rem;
+}
+
+.blog-reader-full .blog-reader-html ul,
+.blog-reader-full .blog-reader-html ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.blog-reader-full .blog-reader-html li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-reader-full .blog-reader-html code {
+  background: rgba(0, 229, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: var(--ff3);
+  font-size: 0.9em;
+}
+
+.blog-reader-full .blog-reader-html pre {
+  background: var(--bg3);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--bor);
+}
+
+.blog-reader-full .blog-reader-html pre code {
+  background: none;
+  padding: 0;
+}
+
+.blog-reader-full .blog-reader-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--bor);
+}
+
+@media (max-width: 768px) {
+  .blog-reader-wrap {
+    padding: 1.5rem 1rem;
+  }
+  
+  .blog-reader-full {
+    padding: 1.5rem 1.5rem 2rem;
+  }
+  
+  .blog-reader-full .blog-reader-title {
+    font-size: 1.6rem;
+  }
+  
+  .blog-reader-full .blog-reader-body {
+    font-size: 0.95rem;
+  }
+}
