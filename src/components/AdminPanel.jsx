@@ -320,37 +320,45 @@ export default function AdminPanel() {
   const [projectGithubUrl, setProjectGithubUrl] = useState('');
   const [projectBody, setProjectBody] = useState('');
   const [projectMessage, setProjectMessage] = useState('');
+  const [editingProjectId, setEditingProjectId] = useState(null);
 
   async function handleCreateProject(e) {
     e.preventDefault();
     setBusy(true);
     setProjectMessage('');
     try {
+      const method = editingProjectId ? 'PUT' : 'POST';
+      const body = {
+        title: projectTitle,
+        summary: projectSummary,
+        type: projectType,
+        category: projectCategory,
+        status: projectStatus,
+        date: projectDate,
+        tags: projectTags,
+        imageUrl: projectImageUrl,
+        liveUrl: projectLiveUrl,
+        githubUrl: projectGithubUrl,
+        body: projectBody
+      };
+
+      if (editingProjectId) {
+        body.id = editingProjectId;
+      }
+
       const res = await fetch('/api/projects', {
-        method: 'POST',
+        method,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          title: projectTitle,
-          summary: projectSummary,
-          type: projectType,
-          category: projectCategory,
-          status: projectStatus,
-          date: projectDate,
-          tags: projectTags,
-          imageUrl: projectImageUrl,
-          liveUrl: projectLiveUrl,
-          githubUrl: projectGithubUrl,
-          body: projectBody
-        })
+        body: JSON.stringify(body)
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        setProjectMessage(data.error || 'Failed to create project');
+        setProjectMessage(data.error || `Failed to ${editingProjectId ? 'update' : 'create'} project`);
         return;
       }
-      setProjectMessage('Project saved successfully.');
+      setProjectMessage(`Project ${editingProjectId ? 'updated' : 'saved'} successfully.`);
       setProjectTitle('');
       setProjectSummary('');
       setProjectType('Full Stack');
@@ -362,11 +370,35 @@ export default function AdminPanel() {
       setProjectLiveUrl('');
       setProjectGithubUrl('');
       setProjectBody('');
+      setEditingProjectId(null);
       if (tab === 'projects') {
         loadProjects();
       }
     } catch (err) {
-      setProjectMessage('Network error while creating project');
+      setProjectMessage(`Network error while ${editingProjectId ? 'updating' : 'creating'} project`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDeleteProject(projectId) {
+    if (!window.confirm('Are you sure you want to delete this project?')) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/projects?id=${projectId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alert(data.error || 'Failed to delete project');
+        return;
+      }
+      loadProjects();
+    } catch (err) {
+      alert('Network error while deleting project');
     } finally {
       setBusy(false);
     }
@@ -698,6 +730,11 @@ export default function AdminPanel() {
 
         {tab === 'createProject' && (
           <form className="admin-form" onSubmit={handleCreateProject}>
+            {editingProjectId && (
+              <div className="admin-info">
+                Editing project. Click "Cancel Edit" to create a new project instead.
+              </div>
+            )}
             <div className="fg">
               <label className="fl" htmlFor="projectTitle">
                 Project Title
@@ -858,8 +895,32 @@ export default function AdminPanel() {
                 className="fsub"
                 disabled={busy}
               >
-                {busy ? 'Saving…' : 'Save Project'}
+                {busy ? 'Saving…' : editingProjectId ? 'Update Project' : 'Save Project'}
               </button>
+              {editingProjectId && (
+                <button
+                  type="button"
+                  className="btn-g"
+                  onClick={() => {
+                    setEditingProjectId(null);
+                    setProjectTitle('');
+                    setProjectSummary('');
+                    setProjectType('Full Stack');
+                    setProjectCategory('fullstack');
+                    setProjectStatus('Completed');
+                    setProjectDate('');
+                    setProjectTags('');
+                    setProjectImageUrl('');
+                    setProjectLiveUrl('');
+                    setProjectGithubUrl('');
+                    setProjectBody('');
+                    setProjectMessage('');
+                  }}
+                  disabled={busy}
+                >
+                  Cancel Edit
+                </button>
+              )}
             </div>
           </form>
         )}
@@ -986,9 +1047,10 @@ export default function AdminPanel() {
                         <button
                           type="button"
                           className="btn-g"
-                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', marginRight: '0.5rem' }}
                           onClick={() => {
                             setTab('createProject');
+                            setEditingProjectId(p._id);
                             setProjectTitle(p.title || '');
                             setProjectSummary(p.summary || '');
                             setProjectType(p.type || 'Full Stack');
@@ -1003,6 +1065,15 @@ export default function AdminPanel() {
                           }}
                         >
                           Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-g"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', borderColor: 'var(--re)', color: 'var(--re)' }}
+                          onClick={() => handleDeleteProject(p._id)}
+                          disabled={busy}
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>

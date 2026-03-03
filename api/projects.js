@@ -260,6 +260,141 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  if (req.method === 'PUT') {
+    const admin = requireAdmin(req);
+    if (!admin) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+
+    try {
+      const body = await readBody(req);
+      const {
+        id,
+        title,
+        summary,
+        type,
+        category,
+        status,
+        date,
+        tags,
+        imageUrl,
+        liveUrl,
+        githubUrl,
+        body: projectBody
+      } = body || {};
+
+      if (!id) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Project ID is required' }));
+        return;
+      }
+
+      if (!title || !summary) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Title and summary are required' }));
+        return;
+      }
+
+      const db = getAdminDatabase();
+      const projectRef = db.ref(`projects/${id}`);
+
+      const snapshot = await projectRef.once('value');
+      if (!snapshot.exists()) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Project not found' }));
+        return;
+      }
+
+      const existingProject = snapshot.val();
+
+      const tagArray = Array.isArray(tags)
+        ? tags
+        : typeof tags === 'string' && tags.trim()
+        ? tags.split(',').map(t => t.trim())
+        : [];
+
+      const updatedDoc = {
+        ...existingProject,
+        title,
+        summary,
+        type: type || '',
+        category: category || '',
+        status: status || 'Completed',
+        date: date || new Date().toISOString().slice(0, 10),
+        tags: tagArray,
+        imageUrl: imageUrl || '',
+        liveUrl: liveUrl || '',
+        githubUrl: githubUrl || '',
+        body: projectBody || '',
+        updatedAt: Date.now(),
+        updatedBy: admin.sub
+      };
+
+      await projectRef.set(updatedDoc);
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ ok: true, id }));
+    } catch (e) {
+      console.error('Error updating project:', e);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Failed to update project' }));
+    }
+    return;
+  }
+
+  if (req.method === 'DELETE') {
+    const admin = requireAdmin(req);
+    if (!admin) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+
+    try {
+      const url = new URL(req.url || '', 'http://localhost');
+      const id = url.searchParams.get('id');
+
+      if (!id) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Project ID is required' }));
+        return;
+      }
+
+      const db = getAdminDatabase();
+      const projectRef = db.ref(`projects/${id}`);
+
+      const snapshot = await projectRef.once('value');
+      if (!snapshot.exists()) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Project not found' }));
+        return;
+      }
+
+      await projectRef.remove();
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) {
+      console.error('Error deleting project:', e);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Failed to delete project' }));
+    }
+    return;
+  }
+
   res.statusCode = 405;
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify({ error: 'Method not allowed' }));
