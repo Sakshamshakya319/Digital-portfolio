@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import anime from 'animejs';
 import BlogTable from './components/BlogTable.jsx';
+import ProjectTable from './components/ProjectTable.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
 
 function initPortfolioEffects() {
@@ -621,62 +622,13 @@ function initPortfolioEffects() {
 }
 
 export default function App() {
-  const [projects, setProjects] = useState([]);
-  const [projectsLoading, setProjectsLoading] = useState(true);
-  const [projectsError, setProjectsError] = useState('');
-  const [activeProject, setActiveProject] = useState(null);
-
   useEffect(() => {
     initPortfolioEffects();
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const res = await fetch('/api/projects');
-        if (!res.ok) {
-          throw new Error('Failed to load projects');
-        }
-        const data = await res.json();
-        if (!cancelled) {
-          setProjects(Array.isArray(data.projects) ? data.projects : []);
-          setProjectsError('');
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setProjectsError('Unable to load projects right now.');
-        }
-      } finally {
-        if (!cancelled) {
-          setProjectsLoading(false);
-        }
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!projects.length || typeof window === 'undefined') {
-      return;
-    }
-    const slug = window.__initialProjectSlug;
-    if (!slug) {
-      return;
-    }
-    const match = projects.find(p => p.slug === slug);
-    if (match) {
-      setActiveProject(match);
-    }
-    window.__initialProjectSlug = '';
-  }, [projects]);
-
   const featuredProjects = useMemo(
-    () => projects.slice(0, 3),
-    [projects]
+    () => [],
+    []
   );
 
   return (
@@ -1424,121 +1376,8 @@ export default function App() {
             </h2>
             <div className="sh-bar" />
           </div>
-          <div className="f-row">
-            <button
-              className="fb on"
-              type="button"
-              data-type="all"
-            >
-              All
-            </button>
-            <button
-              className="fb"
-              type="button"
-              data-type="fullstack"
-            >
-              Full Stack
-            </button>
-            <button
-              className="fb"
-              type="button"
-              data-type="frontend"
-            >
-              Frontend
-            </button>
-            <button
-              className="fb"
-              type="button"
-              data-type="backend"
-            >
-              Backend
-            </button>
-            <button
-              className="fb"
-              type="button"
-              data-type="extension"
-            >
-              Extension
-            </button>
-          </div>
-          <div className="pg" id="projGrid">
-            {projectsLoading && (
-              <div className="admin-info">Loading projects…</div>
-            )}
-            {projectsError && !projectsLoading && (
-              <div className="admin-info">{projectsError}</div>
-            )}
-            {!projectsLoading &&
-              !projectsError &&
-              projects.map((p, index) => (
-                <div
-                  key={p._id || p.slug || index}
-                  className="pc"
-                  data-type={p.category || 'all'}
-                >
-                  <div className="pc-n">
-                    {String(index + 1).padStart(2, '0')} /{' '}
-                    {(p.type || 'Project').toUpperCase()}
-                  </div>
-                  <div className="pc-ic">🌐</div>
-                  <div className="pc-tp">{p.type || 'Project'}</div>
-                  <div className="pc-t">{p.title}</div>
-                  <p className="pc-d">{p.summary}</p>
-                  <div className="pc-tags">
-                    {(Array.isArray(p.tags) ? p.tags : String(p.tags || '')
-                      .split(',')
-                      .map(t => t.trim())
-                      .filter(Boolean)
-                    ).map(tag => (
-                      <span key={tag} className="ptag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="pc-lks">
-                    {p.liveUrl && (
-                      <a
-                        className="plk"
-                        href={p.liveUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        ↗ Live
-                      </a>
-                    )}
-                    {p.githubUrl && (
-                      <a
-                        className="plk"
-                        href={p.githubUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        ⌥ GitHub
-                      </a>
-                    )}
-                    <a
-                      className="plk"
-                      href={
-                        p.slug ? `/project/${p.slug}` : '#'
-                      }
-                      onClick={e => {
-                        e.preventDefault();
-                        console.log('Project clicked:', p.title);
-                        setActiveProject(p);
-                      }}
-                    >
-                      ⌥ Details
-                    </a>
-                  </div>
-                </div>
-              ))}
-            {!projectsLoading &&
-              !projectsError &&
-              projects.length === 0 && (
-                <div className="admin-info">
-                  No projects yet. Add some from the admin panel.
-                </div>
-              )}
+          <div className="ani">
+            <ProjectTable />
           </div>
         </section>
         <footer>
@@ -1552,79 +1391,6 @@ export default function App() {
           </div>
         </footer>
       </div>
-
-      {activeProject && (
-        <div className="modal-overlay" onClick={() => {
-          console.log('Overlay clicked, closing modal');
-          setActiveProject(null);
-        }}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button 
-              className="modal-close" 
-              onClick={() => setActiveProject(null)}
-              aria-label="Close"
-            >
-              ✕
-            </button>
-            <div className="blog-reader">
-              <div className="blog-reader-head">
-                <div className="blog-reader-eyebrow">
-                  {(activeProject.type || 'Project')} · {activeProject.date || ''}
-                </div>
-                <h3 className="blog-reader-title">{activeProject.title}</h3>
-                <div className="blog-reader-meta">
-                  <span>{activeProject.status || ''}</span>
-                </div>
-              </div>
-              {activeProject.imageUrl && (
-                <div className="blog-reader-image">
-                  <img
-                    src={activeProject.imageUrl}
-                    alt={activeProject.title}
-                  />
-                </div>
-              )}
-              <div className="blog-reader-body">
-                {(activeProject.body || activeProject.summary || '')
-                  .split(/\n{2,}/)
-                  .filter(Boolean)
-                  .map((p, idx) => (
-                    <p key={String(idx)}>{p}</p>
-                  ))}
-              </div>
-              <div className="blog-reader-actions">
-                {activeProject.liveUrl && (
-                  <a
-                    className="blog-btn"
-                    href={activeProject.liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    ↗ Live
-                  </a>
-                )}
-                {activeProject.githubUrl && (
-                  <a
-                    className="blog-btn"
-                    href={activeProject.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    ⌥ GitHub
-                  </a>
-                )}
-                <button
-                  type="button"
-                  className="blog-btn ghost"
-                  onClick={() => setActiveProject(null)}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="page" id="page-achievements">
         <section className="sec ct">
