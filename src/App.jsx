@@ -357,6 +357,16 @@ function initPortfolioEffects() {
   }
   toggleTheme();
 
+  // Handle Hire Me button click
+  const hireCta = document.querySelector('.hire-cta');
+  if (hireCta) {
+    hireCta.addEventListener('click', e => {
+      e.preventDefault();
+      const pg = hireCta.getAttribute('data-pg');
+      if (pg) goPage(pg);
+    });
+  }
+
   const path = window.location.pathname.replace(/\/+$/, '');
   let initialPage = 'home';
   let initialBlogSlug = '';
