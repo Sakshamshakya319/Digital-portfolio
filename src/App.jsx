@@ -3,6 +3,8 @@ import anime from 'animejs';
 import BlogTable from './components/BlogTable.jsx';
 import ProjectTable from './components/ProjectTable.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
+import FeaturedProjects from './components/FeaturedProjects.jsx';
+import FeaturedBlogs from './components/FeaturedBlogs.jsx';
 
 function initPortfolioEffects() {
   if (window.__sakshamPortfolioInit) {
@@ -1031,50 +1033,7 @@ export default function App() {
               All Projects →
             </a>
           </div>
-          <div className="proj-trio">
-            <div className="trio-card">
-              <div className="t-num">01 / FOCUS</div>
-              <h3 className="t-title">Student With Production Mindset</h3>
-              <p className="t-desc">
-                From MCA coursework to real-world projects, I focus on writing
-                clean, maintainable code that scales.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">Clean Code</span>
-                <span className="t-tag">Design Systems</span>
-                <span className="t-tag">Team Work</span>
-              </div>
-              <div className="t-arrow">↗</div>
-            </div>
-            <div className="trio-card">
-              <div className="t-num">02 / VALUES</div>
-              <h3 className="t-title">Discipline, Patience, Consistency</h3>
-              <p className="t-desc">
-                I bring a reliable, calm energy to every collaboration. I stay
-                with problems until they are solved.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">Ownership</span>
-                <span className="t-tag">Communication</span>
-                <span className="t-tag">Reliability</span>
-              </div>
-              <div className="t-arrow">↗</div>
-            </div>
-            <div className="trio-card">
-              <div className="t-num">03 / GOAL</div>
-              <h3 className="t-title">Full-Stack Developer Role</h3>
-              <p className="t-desc">
-                I aim to join a team where I can build impactful products using
-                React, Next.js, Node.js and Firebase.
-              </p>
-              <div className="t-tags">
-                <span className="t-tag">Internships</span>
-                <span className="t-tag">Junior Roles</span>
-                <span className="t-tag">Mentorship</span>
-              </div>
-              <div className="t-arrow">↗</div>
-            </div>
-          </div>
+          <FeaturedProjects />
         </section>
 
         <section className="sec ct ani" style={{ paddingTop: 0 }}>
@@ -1094,32 +1053,7 @@ export default function App() {
               All Posts →
             </a>
           </div>
-          <div className="blog-duo">
-            <div className="blog-mini">
-              <div className="bm-cat">Next.js · 7 min read</div>
-              <h3 className="bm-title">
-                Mastering Next.js App Router — A Student&apos;s Real-World Guide
-              </h3>
-              <p className="bm-exc">
-                From pages to app directory — what I learned building production
-                apps at LPU and how it changed how I think about React.
-              </p>
-              <div className="bm-meta">Jan 2025 · Next.js, React, Vercel</div>
-            </div>
-            <div className="blog-mini">
-              <div className="bm-cat">Career · 5 min read</div>
-              <h3 className="bm-title">
-                How I Visited Parliament as an NSS Achiever — and What It Taught
-                Me
-              </h3>
-              <p className="bm-exc">
-                Beyond code — my experience as an NSS achiever, what the
-                Parliament visit meant, and lessons every student developer
-                should hear.
-              </p>
-              <div className="bm-meta">Dec 2024 · Life, NSS, India</div>
-            </div>
-          </div>
+          <FeaturedBlogs />
         </section>
 
         <footer>
