@@ -41,10 +41,15 @@ nav{
   padding:0 2rem;
   border-bottom:1px solid var(--bor);
   backdrop-filter:blur(22px) saturate(1.5);
-  background:rgba(4,8,15,.75);
+  background:rgba(4,8,15,.95);
   transition:background .4s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
-[data-theme="light"] nav{background:rgba(238,244,252,.82);}
+[data-theme="light"] nav{
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid rgba(0,100,200,.2);
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
 .nav-logo{
   display:flex;align-items:center;gap:.7rem;text-decoration:none;
   font-family:var(--ff1);font-size:.9rem;font-weight:700;color:var(--tx);
@@ -98,6 +103,10 @@ nav{
   font-size:1rem;transition:all .3s;
 }
 .th-btn:hover{border-color:var(--c);color:var(--c);box-shadow:var(--glow);}
+[data-theme="light"] .th-btn{
+  border-color:rgba(0,100,200,.25);
+  color:var(--tx);
+}
 .hire-cta{
   font-family:var(--ff3);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;
   padding:0 1.3rem;height:36px;border:1px solid var(--c);color:var(--c);
@@ -106,15 +115,29 @@ nav{
   clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
 }
 .hire-cta:hover{background:rgba(0,229,255,.18);box-shadow:var(--glow);}
+[data-theme="light"] .hire-cta{
+  border-color:var(--c);
+  background:rgba(0,119,187,.08);
+}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:none;
   border:1px solid var(--bor);background:transparent;padding:7px;}
 .hamburger span{width:20px;height:1.5px;background:var(--c);display:block;transition:all .3s;}
+[data-theme="light"] .hamburger{
+  border-color:rgba(0,100,200,.25);
+}
+[data-theme="light"] .hamburger span{
+  background:var(--c);
+}
 .mob-nav{
   display:none;position:fixed;inset:0;z-index:999;
   background:rgba(4,8,15,.97);backdrop-filter:blur(30px);
   flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;
 }
 .mob-nav.open{display:flex;}
+[data-theme="light"] .mob-nav{
+  background:rgba(255,255,255,.98);
+  backdrop-filter:blur(30px);
+}
 .mob-nav a{font-family:var(--ff1);font-size:1.6rem;font-weight:700;
   color:var(--tx);text-decoration:none;letter-spacing:.1em;transition:color .3s;}
 .mob-nav a:hover{color:var(--c);text-shadow:0 0 20px var(--c);}
