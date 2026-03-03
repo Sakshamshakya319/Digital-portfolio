@@ -971,6 +971,7 @@ export default function AdminPanel() {
                     <th>Category</th>
                     <th>Type</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -981,6 +982,29 @@ export default function AdminPanel() {
                       <td>{p.category}</td>
                       <td>{p.type}</td>
                       <td>{p.status}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn-g"
+                          style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                          onClick={() => {
+                            setTab('createProject');
+                            setProjectTitle(p.title || '');
+                            setProjectSummary(p.summary || '');
+                            setProjectType(p.type || 'Full Stack');
+                            setProjectCategory(p.category || 'fullstack');
+                            setProjectStatus(p.status || 'Completed');
+                            setProjectDate(p.date || '');
+                            setProjectTags(p.tags || '');
+                            setProjectImageUrl(p.imageUrl || '');
+                            setProjectLiveUrl(p.liveUrl || '');
+                            setProjectGithubUrl(p.githubUrl || '');
+                            setProjectBody(p.body || '');
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

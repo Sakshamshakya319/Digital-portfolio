@@ -226,7 +226,7 @@ export default function ProjectTable() {
                 <div className="blog-reader-meta">
                   <span>{activeProject.status || 'Completed'}</span>
                   {activeProject.tags && (
-                    <span>{activeProject.tags}</span>
+                    <span>Tags: {activeProject.tags}</span>
                   )}
                 </div>
               </div>
@@ -235,16 +235,48 @@ export default function ProjectTable() {
                   <img
                     src={activeProject.imageUrl}
                     alt={activeProject.title}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
                   />
                 </div>
               )}
               <div className="blog-reader-body">
+                <h4 style={{ marginBottom: '1rem', color: 'var(--c)' }}>About This Project</h4>
                 {(activeProject.body || activeProject.summary || '')
-                  .split(/\n{2,}/)
+                  .split(/\n+/)
                   .filter(Boolean)
                   .map((p, idx) => (
-                    <p key={String(idx)}>{p}</p>
+                    <p key={String(idx)} style={{ marginBottom: '1rem', lineHeight: '1.8' }}>
+                      {p}
+                    </p>
                   ))}
+                
+                {activeProject.tags && (
+                  <div style={{ marginTop: '2rem' }}>
+                    <h4 style={{ marginBottom: '0.8rem', color: 'var(--c)' }}>Technologies Used</h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      {(Array.isArray(activeProject.tags) 
+                        ? activeProject.tags 
+                        : String(activeProject.tags).split(',').map(t => t.trim())
+                      ).map(tag => (
+                        <span 
+                          key={tag} 
+                          style={{
+                            padding: '0.3rem 0.8rem',
+                            background: 'rgba(0,229,255,0.1)',
+                            border: '1px solid rgba(0,229,255,0.3)',
+                            borderRadius: '999px',
+                            fontSize: '0.75rem',
+                            color: 'var(--c)'
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="blog-reader-actions">
                 {activeProject.liveUrl && (
